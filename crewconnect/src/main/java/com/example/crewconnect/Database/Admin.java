@@ -9,6 +9,7 @@ public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    //testing to see if my git works
 
     private String firstname;
     private String lastname;
