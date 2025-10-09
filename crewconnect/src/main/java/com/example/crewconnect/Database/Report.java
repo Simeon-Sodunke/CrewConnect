@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long reportID;
 
     private String title;
     private LocalDateTime timeGenerated;

@@ -9,7 +9,7 @@ import java.util.List;
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long scheduleID;
 
     @ManyToOne
     private Employee user;

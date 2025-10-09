@@ -8,7 +8,7 @@ import lombok.Data;
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long employeeID;
 
     private String firstname;
     private String lastname;
