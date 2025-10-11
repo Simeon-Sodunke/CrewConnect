@@ -8,7 +8,7 @@ import lombok.Data;
 public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long adminID;
     //testing to see if my git works
 
     private String firstname;

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class Shift {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long shiftID;
 
     private LocalDateTime start;
     private LocalDateTime end;

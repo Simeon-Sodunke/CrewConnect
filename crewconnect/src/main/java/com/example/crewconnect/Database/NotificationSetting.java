@@ -8,7 +8,7 @@ import lombok.Data;
 public class NotificationSetting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long notificationSettingID;
 
     private boolean enabled;
     private String method;

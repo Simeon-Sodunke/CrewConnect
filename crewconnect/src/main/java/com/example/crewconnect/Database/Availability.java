@@ -9,7 +9,7 @@ import java.util.List;
 public class Availability {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long availabilityID;
 
     @ManyToOne
     private Employee employee;

@@ -8,7 +8,7 @@ import lombok.Data;
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long notificationID;
 
     private int recipientID;
     private String type;
