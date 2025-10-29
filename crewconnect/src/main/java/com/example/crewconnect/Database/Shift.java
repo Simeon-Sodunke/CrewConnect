@@ -7,11 +7,15 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 public class Shift {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long shiftID;
+    private Long shiftId;
 
+    @Column(name = "start_time")
     private LocalDateTime start;
+
+    @Column(name = "end_time")
     private LocalDateTime end;
 
     @ManyToOne

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Employee Dashboard | CrewConnect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-[#F9F9F9] text-[#2C2C2C] font-inter antialiased">
+
+<!-- Navbar -->
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a th:href="@{/}" class="text-2xl font-bold text-[#0D3B66]">
+            <span class="text-[#D99A26]">Crew</span>Connect
+        </a>
+        <nav class="hidden md:flex gap-6 text-base font-medium" aria-label="Desktop navigation">
+            <a th:href="@{/employee}" class="text-[#D99A26]">Dashboard</a>
+            <a th:href="@{/password/set}" class="hover:text-[#D99A26]">Change Password</a>
+            <a th:href="@{/logout}" class="hover:text-[#D99A26]">Logout</a>
+        </nav>
+        <button type="button" class="md:hidden" onclick="toggleMenu()" aria-label="Toggle mobile menu" aria-controls="mobileMenu" aria-expanded="false">
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+    </div>
+    <div id="mobileMenu" class="hidden border-t border-gray-200 md:hidden bg-white">
+        <nav class="flex flex-col px-6 py-4 space-y-2" aria-label="Mobile navigation">
+            <a th:href="@{/employee}" class="text-[#D99A26]">Dashboard</a>
+            <a th:href="@{/password/set}" class="hover:text-[#D99A26]">Change Password</a>
+            <a th:href="@{/logout}" class="hover:text-[#D99A26]">Logout</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Page header -->
+<section class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="flex items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-[#0D3B66]" th:text="${pageTitle}">Employee Dashboard</h1>
+                <p class="text-gray-600 mt-1">
+                    Welcome, <span class="font-semibold" th:text="${#authentication?.name}">user</span>.
+                    View pairings, set availability, and manage your profile.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick actions -->
+<section class="max-w-7xl mx-auto px-6 py-8">
+    <div class="grid gap-6 lg:grid-cols-3">
+        <a th:href="@{/availability}" class="bg-white rounded-2xl shadow p-6 hover:bg-gray-50">
+            <h2 class="text-lg font-semibold text-[#0D3B66]">Set Availability</h2>
+            <p class="text-gray-600 mt-2 text-sm">Tell us when you’re free for coffee chats.</p>
+        </a>
+
+        <a th:href="@{/pairings}" class="bg-white rounded-2xl shadow p-6 hover:bg-gray-50">
+            <h2 class="text-lg font-semibold text-[#0D3B66]">My Pairings</h2>
+            <p class="text-gray-600 mt-2 text-sm">See upcoming or past pairings.</p>
+        </a>
+
+        <a th:href="@{/employee/profile}" class="bg-white rounded-2xl shadow p-6 hover:bg-gray-50">
+            <h2 class="text-lg font-semibold text-[#0D3B66]">My Profile</h2>
+            <p class="text-gray-600 mt-2 text-sm">Update your details and preferences.</p>
+        </a>
+    </div>
+</section>
+
+<!-- Upcoming pairings table (placeholder bindings you can wire later) -->
+<section class="max-w-7xl mx-auto px-6 pb-12">
+    <div class="bg-white rounded-2xl shadow p-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-[#0D3B66]">Upcoming Pairings</h2>
+            <a th:href="@{/pairings}" class="text-sm text-[#0D3B66] hover:underline">View all</a>
+        </div>
+
+        <div class="mt-4 overflow-auto">
+            <table class="min-w-full text-sm">
+                <thead class="text-left text-gray-600">
+                <tr>
+                    <th class="py-2">When</th>
+                    <th class="py-2">Partner</th>
+                    <th class="py-2">Status</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y">
+                <tr th:each="p : ${upcomingPairings}">
+                    <td class="py-2" th:text="${#temporals.format(p.when, 'EEE, MMM d • h:mm a')}">Tue, Oct 22 • 9:30 AM</td>
+                    <td class="py-2" th:text="${p.partnerName}">Alex Kim</td>
+                    <td class="py-2">
+                        <span class="px-2 py-1 rounded-lg bg-green-50 text-green-700" th:text="${p.status}">Scheduled</span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(upcomingPairings)}">
+                    <td class="py-4 text-gray-500" colspan="3">No pairings scheduled.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<footer class="py-8 bg-[#0D3B66] text-white text-center">
+    <p class="text-sm opacity-90">© 2025 CrewConnect</p>
+</footer>
+
+<script>
+    function toggleMenu() {
+        const m = document.getElementById('mobileMenu');
+        m.classList.toggle('hidden');
+    }
+</script>
+</body>
+</html>

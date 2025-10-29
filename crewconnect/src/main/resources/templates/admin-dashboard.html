@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Dashboard | CrewConnect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body class="bg-[#F9F9F9] text-[#2C2C2C] font-inter antialiased">
+
+<!-- Navbar -->
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200" aria-label="Site header">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a th:href="@{/admin}" class="text-2xl font-bold text-[#2E8B57]">
+            <span class="text-[#D99A26]">Crew</span>Connect
+        </a>
+        <nav class="hidden md:flex gap-6 text-base font-medium" aria-label="Desktop navigation">
+            <a th:href="@{/admin}" class="text-[#D99A26]">Home</a>
+            <a th:href="@{/admin}" class="hover:text-[#D99A26]">Admin</a>
+            <a th:href="@{/admin/register}" class="hover:text-[#D99A26]">Create User</a>
+            <form th:action="@{/logout}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="hover:text-[#D99A26]">Logout</button>
+            </form>
+        </nav>
+        <button type="button" class="md:hidden" onclick="toggleMenu()" aria-label="Toggle mobile menu" aria-controls="mobileMenu" aria-expanded="false">
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+    </div>
+    <div id="mobileMenu" class="hidden border-t border-gray-200 md:hidden bg-white">
+        <nav class="flex flex-col px-6 py-4 space-y-2" aria-label="Mobile navigation">
+            <a th:href="@{/admin}" class="text-[#D99A26]">Home</a>
+            <a th:href="@{/admin/register}" class="hover:text-[#D99A26]">Create User</a>
+            <form th:action="@{/logout}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="text-left hover:text-[#D99A26]">Logout</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<!-- Page header -->
+<section class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="flex items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-[#0D3B66]">Admin Dashboard</h1>
+                <p class="text-gray-600 mt-1">
+                    Welcome back,
+                    <span class="font-semibold" th:text="${#authentication?.name}">admin</span>.
+                    Manage users, availability, and pairings.
+                </p>
+            </div>
+            <div class="flex gap-3">
+                <a th:href="@{/admin/register}" class="bg-[#D99A26] text-white px-4 py-2 rounded-xl font-semibold hover:bg-[#C48A1F] shadow">+ Create User</a>
+                <a th:href="@{/reports}" class="bg-white border px-4 py-2 rounded-xl font-semibold hover:bg-gray-50">View Reports</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- KPI cards -->
+<section class="max-w-7xl mx-auto px-6 py-8">
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="bg-white rounded-2xl shadow p-5">
+            <div class="flex items-center justify-between">
+                <p class="text-sm text-gray-500">Total Employees</p>
+                <span class="text-xl">👥</span>
+            </div>
+            <p class="text-3xl font-bold mt-2" th:text="${stats?.employeesCount}">0</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5">
+            <div class="flex items-center justify-between">
+                <p class="text-sm text-gray-500">Total Managers</p>
+                <span class="text-xl">🧑‍✈️</span>
+            </div>
+            <p class="text-3xl font-bold mt-2" th:text="${stats?.managersCount}">0</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5">
+            <div class="flex items-center justify-between">
+                <p class="text-sm text-gray-500">Availability Windows (This Week)</p>
+                <span class="text-xl">🕓</span>
+            </div>
+            <p class="text-3xl font-bold mt-2" th:text="${stats?.windowsThisWeek}">0</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5">
+            <div class="flex items-center justify-between">
+                <p class="text-sm text-gray-500">Upcoming Pairings</p>
+                <span class="text-xl">☕</span>
+            </div>
+            <p class="text-3xl font-bold mt-2" th:text="${stats?.upcomingPairings}">0</p>
+        </div>
+    </div>
+</section>
+
+<!-- Quick actions & search -->
+<section class="max-w-7xl mx-auto px-6">
+    <div class="grid gap-6 lg:grid-cols-3">
+        <div class="bg-white rounded-2xl shadow p-6 lg:col-span-1">
+            <h2 class="text-lg font-semibold text-[#0D3B66]">Quick Actions</h2>
+            <div class="mt-4 grid gap-3">
+                <a th:href="@{/admin/register}" class="block w-full text-center bg-[#D99A26] text-white px-4 py-2.5 rounded-xl font-semibold hover:bg-[#C48A1F]">Create Employee / Manager</a>
+                <a th:href="@{/pairings/generate}" class="block w-full text-center bg-white border px-4 py-2.5 rounded-xl font-semibold hover:bg-gray-50">Generate Pairings</a>
+                <a th:href="@{/notifications}" class="block w-full text-center bg-white border px-4 py-2.5 rounded-xl font-semibold hover:bg-gray-50">Notification Settings</a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6 lg:col-span-2">
+            <h2 class="text-lg font-semibold text-[#0D3B66]">Find a User</h2>
+            <form th:action="@{/admin/search}" method="get" class="mt-4 flex gap-3">
+                <input type="text" name="q" placeholder="Search by name, email, or username"
+                       class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#D99A26]">
+                <button type="submit" class="bg-white border px-5 rounded-xl font-semibold hover:bg-gray-50">Search</button>
+            </form>
+            <div class="mt-4">
+                <p class="text-sm text-gray-500" th:if="${#lists.isEmpty(searchResults)}">No results yet.</p>
+                <ul class="divide-y" th:if="${searchResults}">
+                    <li class="py-3 flex items-center justify-between" th:each="u : ${searchResults}">
+                        <div>
+                            <p class="font-medium" th:text="${u.firstname + ' ' + u.lastname}">Jane Doe</p>
+                            <p class="text-sm text-gray-600" th:text="${u.email}">jane@company.com</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <a th:href="@{|/admin/user/${u.id}|}" class="text-[#0D3B66] hover:underline">View</a>
+                            <a th:href="@{|/admin/user/${u.id}/edit|}" class="text-[#D99A26] hover:underline">Edit</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tables -->
+<section class="max-w-7xl mx.auto px-6 py-8">
+    <div class="grid gap-6 lg:grid-cols-2">
+        <div class="bg-white rounded-2xl shadow p-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-[#0D3B66]">Recently Created Users</h2>
+                <a th:href="@{/admin/users}" class="text-sm text-[#0D3B66] hover:underline">View all</a>
+            </div>
+            <div class="mt-4 overflow-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="text-left text-gray-600">
+                    <tr>
+                        <th class="py-2">Name</th>
+                        <th class="py-2">Role</th>
+                        <th class="py-2">Email</th>
+                        <th class="py-2">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                    <tr th:each="u : ${recentUsers}">
+                        <td class="py-2"><span class="font-medium" th:text="${u.firstname + ' ' + u.lastname}">John Smith</span></td>
+                        <td class="py-2" th:text="${u.role}">EMPLOYEE</td>
+                        <td class="py-2" th:text="${u.email}">john@company.com</td>
+                        <td class="py-2"><a th:href="@{|/admin/user/${u.id}|}" class="text-[#0D3B66] hover:underline">View</a></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(recentUsers)}">
+                        <td class="py-4 text-gray-500" colspan="4">No users yet.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-[#0D3B66]">Upcoming Pairings</h2>
+                <a th:href="@{/pairings}" class="text-sm text-[#0D3B66] hover:underline">Manage</a>
+            </div>
+            <div class="mt-4 overflow-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="text-left text-gray-600">
+                    <tr>
+                        <th class="py-2">When</th>
+                        <th class="py-2">Employee A</th>
+                        <th class="py-2">Employee B</th>
+                        <th class="py-2">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                    <tr th:each="p : ${upcomingPairings}">
+                        <td class="py-2" th:text="${#temporals.format(p.when, 'EEE, MMM d • h:mm a')}">Tue, Oct 22 • 9:30 AM</td>
+                        <td class="py-2" th:text="${p.empAName}">Alice Lee</td>
+                        <td class="py-2" th:text="${p.empBName}">Bob Rivera</td>
+                        <td class="py-2"><span class="px-2 py-1 rounded-lg bg-green-50 text-green-700" th:text="${p.status}">Scheduled</span></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(upcomingPairings)}">
+                        <td class="py-4 text-gray-500" colspan="4">No pairings scheduled.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Notifications -->
+<section class="max-w-7xl mx-auto px-6 pb-12">
+    <div class="bg-white rounded-2xl shadow p-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-[#0D3B66]">Notifications</h2>
+            <a th:href="@{/notifications}" class="text-sm text-[#0D3B66] hover:underline">Configure</a>
+        </div>
+        <ul class="mt-4 divide-y">
+            <li class="py-3 flex items-start gap-3" th:each="n : ${recentNotifications}">
+                <span class="text-xl">🔔</span>
+                <div>
+                    <p class="font-medium" th:text="${n.title}">Pairing Reminder Sent</p>
+                    <p class="text-sm text-gray-600" th:text="${n.summary}">Emails sent to 12 participants.</p>
+                </div>
+            </li>
+            <li th:if="${#lists.isEmpty(recentNotifications)}" class="py-4 text-gray-500">No recent notifications.</li>
+        </ul>
+    </div>
+</section>
+
+<footer class="py-8 bg-[#0D3B66] text-white text-center">
+    <p class="text-sm opacity-90">© 2025 CrewConnect</p>
+</footer>
+
+<script>
+    function toggleMenu() {
+        const m = document.getElementById('mobileMenu');
+        m.classList.toggle('hidden');
+    }
+</script>
+</body>
+</html>

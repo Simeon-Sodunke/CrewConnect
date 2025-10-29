@@ -18,6 +18,8 @@ public class Manager {
     private String address;
     private String phonenumber;
 
+    private boolean mustChangePassword = true;
+
     @ManyToOne
     private Admin admin;
 

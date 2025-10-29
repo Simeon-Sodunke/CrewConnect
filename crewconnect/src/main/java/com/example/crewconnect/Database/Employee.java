@@ -18,6 +18,9 @@ public class Employee {
     private String address;
     private String phonenumber;
 
+    @Column(name = "must_change_password", nullable = false)
+    private boolean mustChangePassword = true;  // default value for new rows
+
     @ManyToOne
     private Manager manager;
 

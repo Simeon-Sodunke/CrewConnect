@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Dashboard | CrewConnect</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-[#F9F9F9] text-[#2C2C2C] font-inter">
+
+<header class="sticky top-0 bg-white border-b">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a th:href="@{/}" class="text-2xl font-bold text-[#0D3B66]">
+      <span class="text-[#D99A26]">Crew</span>Connect
+    </a>
+    <nav class="flex gap-6 font-medium">
+      <a th:href="@{/manager}" class="text-[#D99A26]">Dashboard</a>
+      <a th:href="@{/password/set}" class="hover:text-[#D99A26]">Change Password</a>
+      <form th:action="@{/logout}" method="post" style="display:inline">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit" class="hover:text-[#D99A26] bg-transparent border-none cursor-pointer font-medium">
+          Logout
+        </button>
+      </form>
+    </nav>
+  </div>
+</header>
+
+<section class="max-w-7xl mx-auto px-6 py-12">
+  <h1 class="text-3xl font-bold text-[#0D3B66]" th:text="${pageTitle}">Manager Dashboard</h1>
+  <p class="mt-3 text-gray-600">Welcome to your dashboard. Here you’ll manage team schedules and view employee availability.</p>
+
+  <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="bg-white shadow rounded-2xl p-6">
+      <h2 class="font-semibold text-[#0D3B66]">Your Employees</h2>
+      <p class="text-gray-500 text-sm mt-1">View assigned team members.</p>
+    </div>
+
+    <div class="bg-white shadow rounded-2xl p-6">
+      <h2 class="font-semibold text-[#0D3B66]">Pairings</h2>
+      <p class="text-gray-500 text-sm mt-1">Check or generate pairings.</p>
+    </div>
+
+    <div class="bg-white shadow rounded-2xl p-6">
+      <h2 class="font-semibold text-[#0D3B66]">Notifications</h2>
+      <p class="text-gray-500 text-sm mt-1">Review recent updates.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="py-8 bg-[#0D3B66] text-white text-center">
+  <p class="text-sm opacity-90">© 2025 CrewConnect</p>
+</footer>
+
+</body>
+</html>
