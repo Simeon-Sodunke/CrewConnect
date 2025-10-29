@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile | CrewConnect</title>
+  <link rel="stylesheet" href="/crewconnect/src/main/resources/static/css/style.css" th:href="@{/css/style.css}">
+  <script>
+    function toggleEdit() {
+      document.querySelectorAll('.edit-field').forEach(el => el.classList.toggle('hidden'));
+      document.querySelectorAll('.view-field').forEach(el => el.classList.toggle('hidden'));
+      document.getElementById('editBtn').classList.toggle('hidden');
+      document.getElementById('saveBtn').classList.toggle('hidden');
+      document.getElementById('cancelBtn').classList.toggle('hidden');
+    }
+  </script>
+</head>
+
+<body class="bg-[#F9F9F9] text-[#2C2C2C] font-inter antialiased">
+
+<!-- Navbar  -->
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a th:href="@{/}" class="text-2xl font-bold text-[#0D3B66]">
+      <span class="text-[#D99A26]">Crew</span>Connect
+    </a>
+    <nav class="hidden md:flex gap-6 text-base font-medium">
+      <a th:href="@{/dashboard}" class="hover:text-[#D99A26]">Dashboard</a>
+      <a th:href="@{/profile}" class="text-[#D99A26] font-semibold">My Profile</a>
+      <a th:href="@{/logout}" class="hover:text-[#D99A26]">Logout</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Profile Container -->
+<main class="max-w-4xl mx-auto mt-12 bg-white rounded-2xl shadow-lg p-8">
+  <!-- User Info Header -->
+  <div class="border-b border-gray-200 pb-6">
+    <h2 class="text-3xl font-bold text-[#0D3B66]">John Doe</h2>
+    <p class="text-gray-600">Employee ID: EMP-1023</p>
+    <p class="text-sm text-gray-500">Role: Employee | Status: Active</p>
+  </div>
+
+  <!-- Personal Info -->
+  <section class="mt-8 space-y-4">
+    <h3 class="text-xl font-semibold text-[#0D3B66] mb-4">Personal Information</h3>
+
+    <div class="grid grid-cols-2 gap-6">
+      <!-- Full Name -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-600 mb-1">Full Name</label>
+        <p class="view-field">John Doe</p>
+        <input type="text" value="John Doe"
+               class="edit-field hidden border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#D99A26]">
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-600 mb-1">Email</label>
+        <p class="view-field">john.doe@example.com</p>
+        <input type="email" value="john.doe@example.com"
+               class="edit-field hidden border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#D99A26]">
+      </div>
+
+      <!-- Phone Number -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-600 mb-1">Phone Number</label>
+        <p class="view-field">+1 612-555-9023</p>
+        <input type="tel" value="+1 612-555-9023"
+               class="edit-field hidden border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#D99A26]">
+      </div>
+
+      <!-- Address -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-600 mb-1">Address</label>
+        <p class="view-field">123 Innovation Drive, Minneapolis MN</p>
+        <input type="text" value="123 Innovation Drive, Minneapolis MN"
+               class="edit-field hidden border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#D99A26]">
+      </div>
+
+      <!-- Manager -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-600 mb-1">Manager</label>
+        <p class="view-field">Jane Smith</p>
+        <input type="text" value="Jane Smith" placeholder="N/A"
+               class="edit-field hidden border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#D99A26]">
+      </div>
+
+      <!-- Role -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-600 mb-1">Role</label>
+        <p class="view-field">Employee</p>
+        <input type="text" value="Employee" readonly
+               class="edit-field hidden border border-gray-300 bg-gray-100 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#D99A26]">
+      </div>
+    </div>
+  </section>
+
+  <!-- Password -->
+  <section class="mt-10">
+    <h3 class="text-xl font-semibold text-[#0D3B66] mb-4">Security</h3>
+    <div class="space-y-2 max-w-md">
+      <label class="block text-sm font-semibold text-gray-600 mb-1">Password</label>
+      <input type="password" placeholder="••••••••"
+             class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#D99A26]">
+      <button class="bg-[#D99A26] hover:bg-[#C48A1F] text-white px-4 py-2 rounded-lg mt-3 font-semibold">
+        Update Password
+      </button>
+    </div>
+  </section>
+
+  <!-- Buttons -->
+  <div class="mt-10 flex justify-end gap-4">
+    <button id="editBtn" onclick="toggleEdit()"
+            class="bg-[#D99A26] text-white px-5 py-2 rounded-lg font-semibold hover:bg-[#C48A1F]">
+      Edit Profile
+    </button>
+    <button id="saveBtn" onclick="toggleEdit()"
+            class="hidden bg-[#0D3B66] text-white px-5 py-2 rounded-lg font-semibold hover:bg-[#092D50]">
+      Save Changes
+    </button>
+    <button id="cancelBtn" onclick="toggleEdit()"
+            class="hidden bg-gray-400 text-white px-5 py-2 rounded-lg font-semibold hover:bg-gray-500">
+      Cancel
+    </button>
+  </div>
+</main>
+
+<footer class="py-8 bg-[#0D3B66] text-white text-center mt-12">
+  <p class="text-sm opacity-90">© 2025 CrewConnect</p>
+</footer>
+
+</body>
+</html>

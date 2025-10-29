@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Coffee Chats | CrewConnect</title>
+  <link rel="stylesheet" href="/crewconnect/src/main/resources/static/css/style.css" th:href="@{/css/style.css}">
+</head>
+
+<body class="bg-[#F9F9F9] text-[#2C2C2C] font-inter antialiased">
+
+<!-- Navbar -->
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a th:href="@{/}" class="text-2xl font-bold text-[#0D3B66]">
+      <span class="text-[#D99A26]">Crew</span>Connect
+    </a>
+    <nav class="hidden md:flex gap-6 text-base font-medium">
+      <a th:href="@{/dashboard}" class="hover:text-[#D99A26]">Dashboard</a>
+      <a th:href="@{/profile}" class="hover:text-[#D99A26]">My Profile</a>
+      <a th:href="@{/sessions}" class="text-[#D99A26] font-semibold">My Sessions</a>
+      <a th:href="@{/logout}" class="hover:text-[#D99A26]">Logout</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Container -->
+<main class="max-w-6xl mx-auto mt-12 bg-white rounded-2xl shadow-lg p-8">
+  <!-- Header -->
+  <div class="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
+    <h2 class="text-3xl font-bold text-[#0D3B66]">My Coffee Chats</h2>
+    <div class="flex gap-2">
+      <button class="bg-[#D99A26] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#C48A1F]">
+        Upcoming
+      </button>
+      <button class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300">
+        Past
+      </button>
+    </div>
+  </div>
+
+  <!-- Upcoming & Past  Sessions -->
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse text-sm">
+      <thead class="bg-[#111827] text-gray-300 uppercase">
+        <tr>
+          <th class="py-4 px-6 text-left w-[25%]">Date</th>
+          <th class="py-4 px-6 text-left w-[20%]">Time</th>
+          <th class="py-4 px-6 text-left w-[25%]">Partner</th>
+          <th class="py-4 px-6 text-left w-[20%]">Platform</th>
+          <th class="py-4 px-6 text-left w-[10%]">Status</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 text-gray-700">
+        <tr class="hover:bg-gray-100 transition">
+          <td class="py-4 px-6">Nov 1, 2025</td>
+          <td class="py-4 px-6">2:00 PM</td>
+          <td class="py-4 px-6">Jane Smith</td>
+          <td class="py-4 px-6">Teams</td>
+          <td class="py-4 px-6">
+            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">Confirmed</span>
+          </td>
+        </tr>
+
+        <tr class="hover:bg-gray-100 transition">
+          <td class="py-4 px-6">Nov 3, 2025</td>
+          <td class="py-4 px-6">10:30 AM</td>
+          <td class="py-4 px-6">Ahmed Ali</td>
+          <td class="py-4 px-6">Teams</td>
+          <td class="py-4 px-6">
+            <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-semibold">Pending</span>
+          </td>
+        </tr>
+
+        <tr class="hover:bg-gray-100 transition">
+          <td class="py-4 px-6">Oct 27, 2025</td>
+          <td class="py-4 px-6">1:00 PM</td>
+          <td class="py-4 px-6">Lisa Johnson</td>
+          <td class="py-4 px-6">Teams</td>
+          <td class="py-4 px-6">
+            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold">Completed</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Divider -->
+  <div class="border-t border-gray-300 my-10"></div>
+
+<!-- Availability Section -->
+<section class="mt-16">
+  <h3 class="text-2xl font-semibold text-[#0D3B66] mb-2">My Availability</h3>
+  <p class="text-gray-600 mb-8">
+    Choose when you're open for CrewConnect Virtual chats this week.
+    Expand each day to select the 30-minute slots you’re available for.
+  </p>
+
+  <div class="space-y-4" id="availabilitySection">
+    <!-- Monday -->
+    <div class="group bg-[#F8FAFC] rounded-xl shadow-sm overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 text-[#0D3B66] font-semibold text-lg">
+        <span>Monday</span>
+        <button type="button"
+                class="day-toggle inline-flex items-center justify-center w-8 h-8 bg-white rounded-full shadow-sm text-[#D99A26] hover:bg-[#D99A26]/10 focus:outline-none focus:ring-2 focus:ring-[#D99A26]"
+                aria-expanded="false" aria-controls="panel-mon" data-target="panel-mon" aria-label="Toggle Monday availability">
+          <svg class="w-5 h-5 shrink-0 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+      <div id="panel-mon" class="hidden p-6 border-t border-gray-200">
+        <p class="text-sm text-gray-600 mb-3">Select all the times you're available:</p>
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <!-- 30-min intervals -->
+          <label class="flex items-center gap-2 bg-gray-100 hover:bg-[#D99A26]/10 px-3 py-2 rounded-lg transition">
+            <input type="checkbox" class="w-4 h-4 text-[#D99A26] rounded focus:ring-[#D99A26]" data-day="Mon" data-time="8:00 AM">
+            <span class="text-sm text-gray-700">8:00 AM</span>
+          </label>
+          <label class="flex items-center gap-2 bg-gray-100 hover:bg-[#D99A26]/10 px-3 py-2 rounded-lg transition">
+            <input type="checkbox" class="w-4 h-4 text-[#D99A26]" data-day="Mon" data-time="8:30 AM">
+            <span class="text-sm text-gray-700">8:30 AM</span>
+          </label>
+          <label class="flex items-center gap-2 bg-gray-100 hover:bg-[#D99A26]/10 px-3 py-2 rounded-lg transition">
+            <input type="checkbox" class="w-4 h-4 text-[#D99A26]" data-day="Mon" data-time="9:00 AM">
+            <span class="text-sm text-gray-700">9:00 AM</span>
+          </label>
+          <label class="flex items-center gap-2 bg-gray-100 hover:bg-[#D99A26]/10 px-3 py-2 rounded-lg transition">
+            <input type="checkbox" class="w-4 h-4 text-[#D99A26]" data-day="Mon" data-time="9:30 AM">
+            <span class="text-sm text-gray-700">9:30 AM</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tuesday -->
+    <div class="group bg-[#F8FAFC] rounded-xl shadow-sm overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 text-[#0D3B66] font-semibold text-lg">
+        <span>Tuesday</span>
+        <button type="button"
+                class="day-toggle inline-flex items-center justify-center w-8 h-8 bg-white rounded-full shadow-sm text-[#D99A26] hover:bg-[#D99A26]/10 focus:outline-none focus:ring-2 focus:ring-[#D99A26]"
+                aria-expanded="false" aria-controls="panel-tue" data-target="panel-tue" aria-label="Toggle Tuesday availability">
+          <svg class="w-5 h-5 shrink-0 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+      <div id="panel-tue" class="hidden p-6 border-t border-gray-200">
+        <p class="text-sm text-gray-600 mb-3">Select all the times you're available:</p>
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <label class="flex items-center gap-2 bg-gray-100 hover:bg-[#D99A26]/10 px-3 py-2 rounded-lg transition">
+            <input type="checkbox" class="w-4 h-4 text-[#D99A26]" data-day="Tue" data-time="8:00 AM">
+            <span class="text-sm text-gray-700">8:00 AM</span>
+          </label>
+          <label class="flex items-center gap-2 bg-gray-100 hover:bg-[#D99A26]/10 px-3 py-2 rounded-lg transition">
+            <input type="checkbox" class="w-4 h-4 text-[#D99A26]" data-day="Tue" data-time="8:30 AM">
+            <span class="text-sm text-gray-700">8:30 AM</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wednesday -->
+    <div class="group bg-[#F8FAFC] rounded-xl shadow-sm overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 text-[#0D3B66] font-semibold text-lg">
+        <span>Wednesday</span>
+        <button type="button"
+                class="day-toggle inline-flex items-center justify-center w-8 h-8 bg-white rounded-full shadow-sm text-[#D99A26] hover:bg-[#D99A26]/10 focus:outline-none focus:ring-2 focus:ring-[#D99A26]"
+                aria-expanded="false" aria-controls="panel-wed" data-target="panel-wed" aria-label="Toggle Wednesday availability">
+          <svg class="w-5 h-5 shrink-0 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+      <div id="panel-wed" class="hidden p-6 border-t border-gray-200">
+        <p class="text-sm text-gray-600 mb-3">Select all the times you're available:</p>
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <label class="flex items-center gap-2 bg-gray-100 hover:bg-[#D99A26]/10 px-3 py-2 rounded-lg transition">
+            <input type="checkbox" class="w-4 h-4 text-[#D99A26]" data-day="Wed" data-time="8:00 AM">
+            <span class="text-sm text-gray-700">8:00 AM</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Save Button -->
+  <div class="flex justify-end mt-10">
+    <button id="saveAvail" type="button"
+            class="bg-[#D99A26] hover:bg-[#C48A1F] text-white px-6 py-3 rounded-full shadow-lg font-semibold transition">
+      Save Availability
+    </button>
+  </div>
+</section>
+
+
+</main>
+
+<footer class="py-8 bg-[#0D3B66] text-white text-center mt-12">
+  <p class="text-sm opacity-90">© 2025 CrewConnect</p>
+</footer>
+
+</body>
+</html>
