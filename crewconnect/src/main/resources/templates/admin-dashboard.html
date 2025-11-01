@@ -17,10 +17,14 @@
         <nav class="hidden md:flex gap-6 text-base font-medium" aria-label="Desktop navigation">
             <a th:href="@{/admin}" class="text-[#D99A26]">Home</a>
             <a th:href="@{/admin}" class="hover:text-[#D99A26]">Admin</a>
+            <a th:href="@{/profile}" class="hover:text-amber-500">My Profile</a>
+            <a th:href="@{/admin/users}" class="btn">User Management</a>
             <a th:href="@{/admin/register}" class="hover:text-[#D99A26]">Create User</a>
-            <form th:action="@{/logout}" method="post">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <button type="submit" class="hover:text-[#D99A26]">Logout</button>
+            <form th:action="@{/logout}" method="post" class="inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="hover:text-[#D99A26] bg-transparent border-none cursor-pointer">
+                    Logout
+                </button>
             </form>
         </nav>
         <button type="button" class="md:hidden" onclick="toggleMenu()" aria-label="Toggle mobile menu" aria-controls="mobileMenu" aria-expanded="false">

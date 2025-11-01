@@ -12,7 +12,9 @@ public class Employee {
 
     private String firstname;
     private String lastname;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false, unique = true)
     private String username;
     private String password;
     private String address;

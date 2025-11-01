@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management | CrewConnect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script>
+        function toggleRoles(){const dd=document.getElementById('roles-dropdown');dd.classList.toggle('hidden');}
+    </script>
+</head>
+<body class="bg-[#F9F9F9] text-[#2C2C2C] font-inter antialiased">
+
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a th:href="@{/}" class="text-2xl font-bold text-[#0D3B66]"><span class="text-[#D99A26]">Crew</span>Connect</a>
+        <nav class="hidden md:flex gap-6 text-base font-medium">
+            <a th:href="@{/admin}" class="hover:text-[#D99A26]">Dashboard</a>
+            <a th:href="@{/admin/register}" class="hover:text-[#D99A26]">Add User</a>
+            <a th:href="@{/admin/users}" class="text-[#D99A26] font-semibold">Users</a>
+            <form th:action="@{/logout}" method="post" class="inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="hover:text-[#D99A26] bg-transparent border-none cursor-pointer">
+                    Logout
+                </button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<section class="max-w-7xl mx-auto mt-8 px-6">
+    <div class="flex items-center justify-between mb-6">
+        <form th:action="@{/admin/users}" method="get" class="flex items-center gap-2 w-full max-w-lg">
+            <input type="text" name="q" th:value="${q}" placeholder="Search users..."
+                   class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#D99A26] flex-1">
+            <input type="hidden" name="role" th:value="${role}">
+            <button type="submit" class="bg-[#D99A26] text-white px-5 py-2 rounded-lg font-semibold hover:bg-[#C48A1F]">Search</button>
+        </form>
+        <a th:href="@{/admin/users/export(q=${q}, role=${role})}"
+           class="ml-4 bg-[#334155] text-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-[#475569]">Export CSV</a>
+    </div>
+</section>
+
+<div class="max-w-7xl mx-auto px-6 flex gap-6 mb-12">
+    <aside class="w-64 bg-[#0D3B66] text-white rounded-xl p-6 space-y-6 h-fit">
+        <a th:href="@{/admin/register}"
+           class="block w-full text-center bg-[#D99A26] hover:bg-[#C48A1F] text-white font-semibold py-2 rounded-lg">Add New User</a>
+
+        <div class="space-y-3">
+            <h2 class="text-lg font-semibold">User Manager</h2>
+
+            <a th:href="@{/admin/users(role='ALL', q=${q})}"
+               th:classappend="${role == 'ALL'} ? 'text-[#D99A26] font-semibold' : ''"
+               class="block hover:text-[#D99A26]">Users</a>
+
+            <button type="button" onclick="toggleRoles()"
+                    class="w-full text-left hover:text-[#D99A26] flex items-center justify-between">
+                <span th:classappend="${role == 'EMPLOYEE' or role == 'MANAGER'} ? 'text-[#D99A26] font-semibold' : ''">Roles</span>
+                <span aria-hidden="true">▾</span>
+            </button>
+
+            <div id="roles-dropdown" class="ml-3 space-y-2 hidden">
+                <a th:href="@{/admin/users(role='EMPLOYEE', q=${q})}"
+                   th:classappend="${role == 'EMPLOYEE'} ? 'text-[#D99A26] font-semibold' : ''"
+                   class="block hover:text-[#D99A26]">Employees</a>
+
+                <a th:href="@{/admin/users(role='MANAGER', q=${q})}"
+                   th:classappend="${role == 'MANAGER'} ? 'text-[#D99A26] font-semibold' : ''"
+                   class="block hover:text-[#D99A26]">Managers</a>
+            </div>
+
+            <a href="#" class="block hover:text-[#D99A26]">Rules</a>
+        </div>
+    </aside>
+
+    <section class="flex-1">
+        <div class="bg-white rounded-xl shadow overflow-x-auto p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-semibold">User Management</h2>
+                <p class="text-sm text-gray-500" th:text="'Showing ' + ${count} + ' entries'">Showing 0 entries</p>
+            </div>
+
+            <table class="w-full text-sm">
+                <thead class="bg-[#0D3B66] text-white">
+                <tr>
+                    <th class="py-3 px-4 text-left w-[6%]">#</th>
+                    <th class="py-3 px-4 text-left w-[28%]">Name</th>
+                    <th class="py-3 px-4 text-left w-[30%]">Email</th>
+                    <th class="py-3 px-4 text-left w-[18%]">Role</th>
+                    <th class="py-3 px-4 text-left w-[18%]">Status</th>
+                    <th class="py-3 px-4 text-center w-[12%]">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="row, iStat : ${rows}" class="border-t hover:bg-gray-50">
+                    <td class="py-3 px-4" th:text="${iStat.index + 1}">1</td>
+                    <td class="py-3 px-4" th:text="${row.name}">Name</td>
+                    <td class="py-3 px-4" th:text="${row.email}">email@example.com</td>
+                    <td class="py-3 px-4" th:text="${row.role}">EMPLOYEE</td>
+                    <td class="py-3 px-4">
+         <span class="px-2 py-1 rounded text-xs font-semibold"
+               th:text="${row.status}"
+               th:classappend="${ row.status == 'Active'
+                        ? 'bg-green-100 text-green-800'
+                        : (row.status == 'Must Reset Password'
+                           ? 'bg-yellow-100 text-yellow-800'
+                           : 'bg-gray-100 text-gray-800') }">
+            Active
+        </span>
+                    <td class="py-3 px-4 text-center">
+                        <a th:href="@{'/admin/users/' + ${row.type} + '/' + ${row.id} + '/edit'}"
+                           class="bg-[#D99A26] text-white px-3 py-1.5 rounded hover:bg-[#C48A1F]">Edit</a>
+
+                        <form th:action="@{'/admin/users/' + ${row.type} + '/' + ${row.id} + '/delete'}"
+                              method="post"
+                              class="inline-block ml-2"
+                              onsubmit="return confirm('Delete this user permanently?');">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <button type="submit" class="px-3 py-1.5 rounded bg-red-600 text-white hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(rows)}">
+                    <td colspan="6" class="py-6 px-4 text-center text-gray-500">No users to display.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<footer class="py-8 bg-[#0D3B66] text-white text-center">
+    <p class="text-sm opacity-90">© 2025 CrewConnect</p>
+</footer>
+
+<script th:inline="javascript">
+    (function(){
+        /*<![CDATA[*/
+        var activeRole = /*[[${role} ?: 'ALL']]*/ 'ALL';
+        if (activeRole === 'EMPLOYEE' || activeRole === 'MANAGER') {
+            var dd = document.getElementById('roles-dropdown');
+            if (dd) dd.classList.remove('hidden');
+        }
+        /*]]>*/
+    })();
+</script>
+
+</body>
+</html>

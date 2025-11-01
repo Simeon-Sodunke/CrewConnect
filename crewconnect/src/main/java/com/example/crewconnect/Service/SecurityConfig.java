@@ -21,7 +21,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/css/**", "/images/**", "/js/**").permitAll()
-                        .requestMatchers("/password/**").authenticated()   // add this line
+                        .requestMatchers("/profile", "/admin/profile").authenticated()
+                        .requestMatchers("/password/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -29,11 +30,10 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .successHandler(successHandler)        // sends ADMIN -> /admin
+                        .successHandler(successHandler)
                         .failureUrl("/login?error")
                         .permitAll()
                 )
-                // logout must be POST (we add a form in the templates)
                 .logout(l -> l.logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)

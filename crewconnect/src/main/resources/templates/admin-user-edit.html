@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit User | CrewConnect</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script>
+    function onRoleChange(selId, sectionId) {
+      const value = document.getElementById(selId).value;
+      const sec = document.getElementById(sectionId);
+      if (value === 'EMPLOYEE') sec.classList.remove('hidden'); else sec.classList.add('hidden');
+    }
+  </script>
+</head>
+<body class="bg-[#F9F9F9] text-[#2C2C2C] font-inter antialiased">
+
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a th:href="@{/}" class="text-2xl font-bold text-[#0D3B66]"><span class="text-[#D99A26]">Crew</span>Connect</a>
+    <nav class="hidden md:flex gap-6 text-base font-medium">
+      <a th:href="@{/admin}" class="hover:text-[#D99A26]">Dashboard</a>
+      <a th:href="@{/admin/users}" class="hover:text-[#D99A26]">Users</a>
+      <form th:action="@{/logout}" method="post" class="inline">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit" class="hover:text-[#D99A26] bg-transparent border-0 cursor-pointer">Logout</button>
+      </form>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-3xl mx-auto mt-8 px-6">
+  <div class="bg-white rounded-xl shadow p-6">
+    <h1 class="text-2xl font-semibold mb-4" th:text="'Edit ' + ${type}">Edit</h1>
+
+    <div th:if="${error}" class="mb-4 p-3 rounded bg-red-100 text-red-800" th:text="${error}"></div>
+    <div th:if="${msg}" class="mb-4 p-3 rounded bg-green-100 text-green-800" th:text="${msg}"></div>
+
+    <form th:action="@{'/admin/users/' + ${type} + '/' + ${targetId} + '/edit'}" method="post">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+      <!-- Role selector (allows switching) -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Role</label>
+        <select id="roleSelect" name="newRole"
+                class="w-full border rounded px-3 py-2"
+                th:value="${type}"
+                th:onchange="'onRoleChange(' + '\'' + 'roleSelect' + '\'' + ', ' + '\'' + 'mgrSection' + '\'' + ')'">
+          <option value="EMPLOYEE">EMPLOYEE</option>
+          <option value="MANAGER">MANAGER</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">First name</label>
+          <input type="text" name="firstname" th:value="${user.firstname}" class="w-full border rounded px-3 py-2">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Last name</label>
+          <input type="text" name="lastname" th:value="${user.lastname}" class="w-full border rounded px-3 py-2">
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">Email</label>
+          <input type="email" name="email" th:value="${user.email}" class="w-full border rounded px-3 py-2">
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">Username</label>
+          <input type="text" name="username" th:value="${user.username}" class="w-full border rounded px-3 py-2">
+        </div>
+
+        <!-- Manager assignment (only visible when final role is EMPLOYEE) -->
+        <div id="mgrSection" class="md:col-span-2" th:classappend="${type} == 'EMPLOYEE' ? '' : ' hidden'">
+          <label class="block text-sm font-medium mb-1">Manager</label>
+          <select name="managerId" class="w-full border rounded px-3 py-2">
+            <option value="">— None —</option>
+            <option th:each="m : ${managers}"
+                    th:value="${m.managerID}"
+                    th:selected="${type}=='EMPLOYEE' and ${user.manager}!=null ? ${user.manager.managerID}==${m.managerID} : false"
+                    th:text="${m.firstname + ' ' + m.lastname}">
+            </option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">Address</label>
+          <input type="text" name="address" th:value="${user.address}" class="w-full border rounded px-3 py-2">
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">Phone</label>
+          <input type="text" name="phonenumber" th:value="${user.phonenumber}" class="w-full border rounded px-3 py-2">
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">New Password (leave blank to keep)</label>
+          <input type="password" name="password" class="w-full border rounded px-3 py-2">
+        </div>
+
+        <div class="md:col-span-2 flex items-center gap-2">
+          <input id="reset" type="checkbox" name="mustChangePassword"
+                 th:checked="${user.mustChangePassword}" class="h-4 w-4">
+          <label for="reset" class="text-sm">Must reset password at next login</label>
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-3">
+        <button type="submit" class="bg-[#D99A26] text-white px-4 py-2 rounded hover:bg-[#C48A1F]">
+          Save Changes
+        </button>
+        <a th:href="@{/admin/users}" class="px-4 py-2 rounded border">Cancel</a>
+
+        <!-- Delete (POST + CSRF) -->
+        <form th:action="@{'/admin/users/' + ${type} + '/' + ${targetId} + '/delete'}"
+              method="post"
+              onsubmit="return confirm('Delete this user permanently?');">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          <button type="submit" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">
+            Delete User
+          </button>
+        </form>
+      </div>
+    </form>
+  </div>
+</main>
+
+<footer class="py-8 bg-[#0D3B66] text-white text-center mt-12">
+  <p class="text-sm opacity-90">© 2025 CrewConnect</p>
+</footer>
+
+<script>
+  // Initialize the manager section visibility based on the current selection after page load
+  document.addEventListener('DOMContentLoaded', function () {
+    onRoleChange('roleSelect', 'mgrSection');
+  });
+</script>
+
+</body>
+</html>

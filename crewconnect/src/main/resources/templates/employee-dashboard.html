@@ -16,8 +16,14 @@
         </a>
         <nav class="hidden md:flex gap-6 text-base font-medium" aria-label="Desktop navigation">
             <a th:href="@{/employee}" class="text-[#D99A26]">Dashboard</a>
+            <a th:href="@{/profile}" class="hover:text-amber-500">My Profile</a>
             <a th:href="@{/password/set}" class="hover:text-[#D99A26]">Change Password</a>
-            <a th:href="@{/logout}" class="hover:text-[#D99A26]">Logout</a>
+            <form th:action="@{/logout}" method="post" class="inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="hover:text-[#D99A26] bg-transparent border-none cursor-pointer">
+                    Logout
+                </button>
+            </form>
         </nav>
         <button type="button" class="md:hidden" onclick="toggleMenu()" aria-label="Toggle mobile menu" aria-controls="mobileMenu" aria-expanded="false">
             <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
