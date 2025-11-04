@@ -45,10 +45,9 @@
 
     <div class="space-y-4">
       <h2 class="text-lg font-semibold mb-2">User Manager</h2>
-      <nav class="flex flex-col space-y-2" aria-label="Desktop navigation">
+      <nav class="flex flex-col space-y-2" aria-label="Sidebar user management navigation">
         <a href="#" class="text-[#D99A26] font-semibold hover:text-[#C48A1F]">Users</a>
         <a href="#" class="hover:text-[#D99A26]">Roles</a>
-        <a href="#" class="hover:text-[#D99A26]">Rules</a>
       </nav>
     </div>
   </aside>
@@ -80,68 +79,27 @@
       </thead>
 
       <tbody class="divide-y divide-gray-700">
-        <tr class="hover:bg-[#2C3646] transition">
-          <td class="py-4 px-6">1</td>
+        <tr class="hover:bg-[#2C3646] transition" th:each="user : ${rows}">
+          <td class="py-4 px-6" th:text="${user.id}">1</td>
           <td class="py-4 px-6 flex items-center gap-3">
-            <span>Michael Holz</span>
+            <span th:text="${user.name}">Michael Holz</span>
           </td>
-          <td class="py-4 px-6">04/10/2013</td>
-          <td class="py-4 px-6">Admin</td>
-          <td class="py-4 px-6"><span class="bg-green-900/60 text-green-300 px-3 py-1 rounded-full text-xs font-semibold">Active</span></td>
-          <td class="py-4 px-6 text-center">
-            <button type="button" class="bg-[#D99A26] text-white px-4 py-1.5 rounded-md hover:bg-[#C48A1F]">Edit</button>
+          <td class="py-4 px-6" th:text="${user.dateCreated}">04/10/2025</td>
+          <td class="py-4 px-6" th:text="${user.role}">Admin</td>
+          <td class="py-4 px-6">
+            <span class="bg-green-900/60 text-green-300 px-3 py-1 rounded-full text-xs font-semibold" th:text="${user.status}">Active</span>
           </td>
-        </tr>
+          <td class="py-4 px-6 text-center text-white">
+            <!-- Edit link uses both type and id -->
+            <a th:href="@{/admin/users/{type}/{id}/edit(type=${user.type},id=${user.id})}"
+               class="inline-block bg-[#D99A26] text-white px-4 py-1.5 rounded-md hover:bg-[#C48A1F] mr-2">Edit</a>
 
-        <tr class="hover:bg-[#2C3646] transition">
-          <td class="py-4 px-6">2</td>
-          <td class="py-4 px-6 flex items-center gap-3">
-            <span>Paula Wilson</span>
-          </td>
-          <td class="py-4 px-6">05/08/2014</td>
-          <td class="py-4 px-6">Employee</td>
-          <td class="py-4 px-6"><span class="bg-green-900/60 text-green-300 px-3 py-1 rounded-full text-xs font-semibold">Active</span></td>
-          <td class="py-4 px-6 text-center">
-            <button type="button" class="bg-[#D99A26] text-white px-4 py-1.5 rounded-md hover:bg-[#C48A1F]">Edit</button>
-          </td>
-        </tr>
-
-        <tr class="hover:bg-[#2C3646] transition">
-          <td class="py-4 px-6">3</td>
-          <td class="py-4 px-6 flex items-center gap-3">
-            <span>Antonio Moreno</span>
-          </td>
-          <td class="py-4 px-6">11/05/2015</td>
-          <td class="py-4 px-6">Employee</td>
-          <td class="py-4 px-6"><span class="bg-red-900/60 text-red-300 px-3 py-1 rounded-full text-xs font-semibold">Suspended</span></td>
-          <td class="py-4 px-6 text-center">
-            <button type="button" class="bg-[#D99A26] text-white px-4 py-1.5 rounded-md hover:bg-[#C48A1F]">Edit</button>
-          </td>
-        </tr>
-
-        <tr class="hover:bg-[#2C3646] transition">
-          <td class="py-4 px-6">4</td>
-          <td class="py-4 px-6 flex items-center gap-3">
-            <span>Mary Saveley</span>
-          </td>
-          <td class="py-4 px-6">06/09/2016</td>
-          <td class="py-4 px-6">Employee</td>
-          <td class="py-4 px-6"><span class="bg-green-900/60 text-green-300 px-3 py-1 rounded-full text-xs font-semibold">Active</span></td>
-          <td class="py-4 px-6 text-center">
-            <button type="button" class="bg-[#D99A26] text-white px-4 py-1.5 rounded-md hover:bg-[#C48A1F]">Edit</button>
-          </td>
-        </tr>
-
-        <tr class="hover:bg-[#2C3646] transition">
-          <td class="py-4 px-6">5</td>
-          <td class="py-4 px-6 flex items-center gap-3">
-            <span>Martin Sommer</span>
-          </td>
-          <td class="py-4 px-6">12/08/2017</td>
-          <td class="py-4 px-6">Manager</td>
-          <td class="py-4 px-6"><span class="bg-yellow-900/60 text-yellow-300 px-3 py-1 rounded-full text-xs font-semibold">Inactive</span></td>
-          <td class="py-4 px-6 text-center">
-            <button type="button" class="bg-[#D99A26] text-white px-4 py-1.5 rounded-md hover:bg-[#C48A1F]">Edit</button>
+            <!-- Delete posts to /admin/users/{type}/{id}/delete with CSRF and confirm -->
+            <form class="inline-block" th:action="@{/admin/users/{type}/{id}/delete(type=${user.type},id=${user.id})}"
+                  method="post" onsubmit="return confirm('Delete this user permanently?');">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="bg-red-600 text-white px-4 py-1.5 rounded-md hover:bg-red-700">Delete</button>
+            </form>
           </td>
         </tr>
       </tbody>
