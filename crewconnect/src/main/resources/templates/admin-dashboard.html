@@ -18,7 +18,7 @@
             <a th:href="@{/admin}" class="text-[#D99A26]">Home</a>
             <a th:href="@{/admin}" class="hover:text-[#D99A26]">Admin</a>
             <a th:href="@{/profile}" class="hover:text-amber-500">My Profile</a>
-            <a th:href="@{/admin/users}" class="btn">User Management</a>
+            <a th:href="@{/admin/users}" class="hover:text-[#D99A26]">User Management</a>
             <a th:href="@{/admin/register}" class="hover:text-[#D99A26]">Create User</a>
             <form th:action="@{/logout}" method="post" class="inline">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
@@ -68,20 +68,31 @@
 <!-- KPI cards -->
 <section class="max-w-7xl mx-auto px-6 py-8">
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="bg-white rounded-2xl shadow p-5">
+        <!-- Total Employees (clickable) -->
+        <a th:href="@{/admin/users(role='EMPLOYEE')}"
+           class="bg-white rounded-2xl shadow p-5 block hover:shadow-md hover:-translate-y-0.5 transition
+                  focus:outline-none focus:ring-2 focus:ring-[#D99A26] focus:ring-offset-2"
+           aria-label="View all employees">
             <div class="flex items-center justify-between">
                 <p class="text-sm text-gray-500">Total Employees</p>
                 <span class="text-xl">👥</span>
             </div>
             <p class="text-3xl font-bold mt-2" th:text="${stats?.employeesCount}">0</p>
-        </div>
-        <div class="bg-white rounded-2xl shadow p-5">
+        </a>
+
+        <!-- Total Managers (clickable) -->
+        <a th:href="@{/admin/users(role='MANAGER')}"
+           class="bg-white rounded-2xl shadow p-5 block hover:shadow-md hover:-translate-y-0.5 transition
+                  focus:outline-none focus:ring-2 focus:ring-[#D99A26] focus:ring-offset-2"
+           aria-label="View all managers">
             <div class="flex items-center justify-between">
                 <p class="text-sm text-gray-500">Total Managers</p>
                 <span class="text-xl">🧑‍✈️</span>
             </div>
             <p class="text-3xl font-bold mt-2" th:text="${stats?.managersCount}">0</p>
-        </div>
+        </a>
+
+        <!-- Availability Windows (This Week) -->
         <div class="bg-white rounded-2xl shadow p-5">
             <div class="flex items-center justify-between">
                 <p class="text-sm text-gray-500">Availability Windows (This Week)</p>
@@ -89,6 +100,8 @@
             </div>
             <p class="text-3xl font-bold mt-2" th:text="${stats?.windowsThisWeek}">0</p>
         </div>
+
+        <!-- Upcoming Pairings -->
         <div class="bg-white rounded-2xl shadow p-5">
             <div class="flex items-center justify-between">
                 <p class="text-sm text-gray-500">Upcoming Pairings</p>
@@ -132,71 +145,6 @@
                         </div>
                     </li>
                 </ul>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Tables -->
-<section class="max-w-7xl mx.auto px-6 py-8">
-    <div class="grid gap-6 lg:grid-cols-2">
-        <div class="bg-white rounded-2xl shadow p-6">
-            <div class="flex items-center justify-between">
-                <h2 class="text-lg font-semibold text-[#0D3B66]">Recently Created Users</h2>
-                <a th:href="@{/admin/users}" class="text-sm text-[#0D3B66] hover:underline">View all</a>
-            </div>
-            <div class="mt-4 overflow-auto">
-                <table class="min-w-full text-sm">
-                    <thead class="text-left text-gray-600">
-                    <tr>
-                        <th class="py-2">Name</th>
-                        <th class="py-2">Role</th>
-                        <th class="py-2">Email</th>
-                        <th class="py-2">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody class="divide-y">
-                    <tr th:each="u : ${recentUsers}">
-                        <td class="py-2"><span class="font-medium" th:text="${u.firstname + ' ' + u.lastname}">John Smith</span></td>
-                        <td class="py-2" th:text="${u.role}">EMPLOYEE</td>
-                        <td class="py-2" th:text="${u.email}">john@company.com</td>
-                        <td class="py-2"><a th:href="@{|/admin/user/${u.id}|}" class="text-[#0D3B66] hover:underline">View</a></td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(recentUsers)}">
-                        <td class="py-4 text-gray-500" colspan="4">No users yet.</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow p-6">
-            <div class="flex items-center justify-between">
-                <h2 class="text-lg font-semibold text-[#0D3B66]">Upcoming Pairings</h2>
-                <a th:href="@{/pairings}" class="text-sm text-[#0D3B66] hover:underline">Manage</a>
-            </div>
-            <div class="mt-4 overflow-auto">
-                <table class="min-w-full text-sm">
-                    <thead class="text-left text-gray-600">
-                    <tr>
-                        <th class="py-2">When</th>
-                        <th class="py-2">Employee A</th>
-                        <th class="py-2">Employee B</th>
-                        <th class="py-2">Status</th>
-                    </tr>
-                    </thead>
-                    <tbody class="divide-y">
-                    <tr th:each="p : ${upcomingPairings}">
-                        <td class="py-2" th:text="${#temporals.format(p.when, 'EEE, MMM d • h:mm a')}">Tue, Oct 22 • 9:30 AM</td>
-                        <td class="py-2" th:text="${p.empAName}">Alice Lee</td>
-                        <td class="py-2" th:text="${p.empBName}">Bob Rivera</td>
-                        <td class="py-2"><span class="px-2 py-1 rounded-lg bg-green-50 text-green-700" th:text="${p.status}">Scheduled</span></td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(upcomingPairings)}">
-                        <td class="py-4 text-gray-500" colspan="4">No pairings scheduled.</td>
-                    </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>

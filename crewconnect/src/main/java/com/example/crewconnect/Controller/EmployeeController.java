@@ -13,7 +13,7 @@ public class EmployeeController {
     @GetMapping("")
     public String employeeDashboard(Model model) {
         model.addAttribute("pageTitle", "Employee Dashboard");
-        return "employee-dashboard"; // looks for templates/employee-dashboard.html
+        return "employee-dashboard";
     }
 
 }

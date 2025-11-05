@@ -34,7 +34,11 @@ public class AdminUserController {
 
     @GetMapping("/register")
     public String showForm(Model model) {
-        model.addAttribute("managers", managerRepo.findAll());
+        var managers = managerRepo.findAll();
+        managers.sort(Comparator
+                .comparing(Manager::getFirstname, String.CASE_INSENSITIVE_ORDER)
+                .thenComparing(Manager::getLastname, String.CASE_INSENSITIVE_ORDER));
+        model.addAttribute("managers", managers);
         return "admin-register";
     }
 
@@ -50,40 +54,46 @@ public class AdminUserController {
                          @RequestParam(required = false) Long managerId,
                          Model model) {
 
+        // Always re-add managers so the form can render correctly
+        model.addAttribute("managers", managerRepo.findAll());
+
+        // Uniqueness gate
         String err = reg.validateUniqueness(email, username);
         if (err != null) {
             model.addAttribute("error", err);
-            model.addAttribute("managers", managerRepo.findAll());
             return "admin-register";
         }
 
-        if ("MANAGER".equalsIgnoreCase(role)) {
-            Manager m = new Manager();
-            m.setFirstname(firstname);
-            m.setLastname(lastname);
-            m.setEmail(email);
-            m.setUsername(username);
-            m.setPassword(password);
-            m.setAddress(address);
-            m.setPhonenumber(phonenumber);
-            reg.createManager(m);
-        } else {
-            Employee e = new Employee();
-            e.setFirstname(firstname);
-            e.setLastname(lastname);
-            e.setEmail(email);
-            e.setUsername(username);
-            e.setPassword(password);
-            e.setAddress(address);
-            e.setPhonenumber(phonenumber);
-            reg.createEmployee(e, managerId);
+        try {
+            if ("MANAGER".equalsIgnoreCase(role)) {
+                Manager m = new Manager();
+                m.setFirstname(firstname);
+                m.setLastname(lastname);
+                m.setEmail(email);
+                m.setUsername(username);
+                m.setPassword(password);
+                m.setAddress(address);
+                m.setPhonenumber(phonenumber);
+                reg.createManager(m);           // can throw IllegalArgumentException
+            } else {
+                Employee e = new Employee();
+                e.setFirstname(firstname);
+                e.setLastname(lastname);
+                e.setEmail(email);
+                e.setUsername(username);
+                e.setPassword(password);
+                e.setAddress(address);
+                e.setPhonenumber(phonenumber);
+                reg.createEmployee(e, managerId); // can throw IllegalArgumentException
+            }
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("error", ex.getMessage()); // e.g., password policy message
+            return "admin-register";
         }
 
         model.addAttribute("msg", "User created!");
-        model.addAttribute("managers", managerRepo.findAll());
         return "admin-register";
     }
-
     /** Users table with optional search & role filter */
     @GetMapping("/users")
     public String users(@RequestParam(value = "q", required = false) String q,

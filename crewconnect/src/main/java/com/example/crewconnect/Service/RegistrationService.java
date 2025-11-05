@@ -13,6 +13,7 @@ public class RegistrationService {
     private final PasswordEncoder encoder;
     private final EmployeeRepository empRepo;
     private final ManagerRepository mgrRepo;
+    private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d).+$";
 
     public RegistrationService(PasswordEncoder encoder,
                                EmployeeRepository empRepo,
@@ -22,8 +23,15 @@ public class RegistrationService {
         this.mgrRepo = mgrRepo;
     }
 
+    public boolean isPasswordValid(String password) {
+        return password != null && password.matches(PASSWORD_PATTERN);
+    }
+
     /* ---------- create ---------- */
     public Employee createEmployee(Employee e, Long managerId) {
+        if (!isPasswordValid(e.getPassword())) {
+            throw new IllegalArgumentException("Password must contain at least one letter and one number.");
+        }
         e.setPassword(encoder.encode(e.getPassword()));
         e.setMustChangePassword(true);
         if (managerId != null) mgrRepo.findById(managerId).ifPresent(e::setManager);
@@ -31,6 +39,9 @@ public class RegistrationService {
     }
 
     public Manager createManager(Manager m) {
+        if (!isPasswordValid(m.getPassword())) {
+            throw new IllegalArgumentException("Password must contain at least one letter and one number.");
+        }
         m.setPassword(encoder.encode(m.getPassword()));
         m.setMustChangePassword(true);
         return mgrRepo.save(m);
