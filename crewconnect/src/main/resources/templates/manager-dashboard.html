@@ -27,25 +27,39 @@
   </div>
 </header>
 
-<section class="max-w-7xl mx-auto px-6 py-12">
+<section class="max-w-7xl mx_auto px-6 py-12">
   <h1 class="text-3xl font-bold text-[#0D3B66]" th:text="${pageTitle}">Manager Dashboard</h1>
-  <p class="mt-3 text-gray-600">Welcome to your dashboard. Here you’ll manage team schedules and view employee availability.</p>
+  <p class="mt-3 text-gray-600">
+    Welcome to your dashboard. Here you’ll manage team schedules and view employee availability.
+  </p>
 
   <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <!-- Your Employees -->
     <a th:href="@{/manager/employees}" class="bg-white shadow rounded-2xl p-6 block hover:shadow-md transition">
       <h2 class="font-semibold text-[#0D3B66]">Your Employees</h2>
       <p class="text-gray-500 text-sm mt-1">View assigned team members.</p>
     </a>
 
+    <!-- Pairings -->
     <div class="bg-white shadow rounded-2xl p-6">
       <h2 class="font-semibold text-[#0D3B66]">Pairings</h2>
       <p class="text-gray-500 text-sm mt-1">Check or generate pairings.</p>
     </div>
 
+    <!-- Notifications -->
     <div class="bg-white shadow rounded-2xl p-6">
       <h2 class="font-semibold text-[#0D3B66]">Notifications</h2>
       <p class="text-gray-500 text-sm mt-1">Review recent updates.</p>
     </div>
+
+    <!-- NEW: Set Availability for Manager -->
+    <a th:href="@{/manager/availability}"
+       class="bg-white shadow rounded-2xl p-6 block hover:shadow-md transition">
+      <h2 class="font-semibold text-[#0D3B66]">Set Availability</h2>
+      <p class="text-gray-500 text-sm mt-1">
+        Tell us when you’re free for coffee chats.
+      </p>
+    </a>
   </div>
 </section>
 

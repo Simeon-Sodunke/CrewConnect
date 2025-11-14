@@ -1,71 +1,83 @@
 package com.example.crewconnect.Controller;
 
-import com.example.crewconnect.Repository.EmployeeRepository;
-import com.example.crewconnect.Repository.ManagerRepository;
 import com.example.crewconnect.Database.Employee;
 import com.example.crewconnect.Database.Manager;
-import org.springframework.security.core.Authentication;
+import com.example.crewconnect.Repository.EmployeeRepository;
+import com.example.crewconnect.Repository.ManagerRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.security.Principal;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/password")
 public class PasswordController {
 
-    private final EmployeeRepository empRepo;
-    private final ManagerRepository mgrRepo;
-    private final PasswordEncoder encoder;
+    private final EmployeeRepository employeeRepo;
+    private final ManagerRepository managerRepo;
+    private final PasswordEncoder passwordEncoder;
 
-    public PasswordController(EmployeeRepository empRepo,
-                              ManagerRepository mgrRepo,
-                              PasswordEncoder encoder) {
-        this.empRepo = empRepo;
-        this.mgrRepo = mgrRepo;
-        this.encoder = encoder;
+    public PasswordController(EmployeeRepository employeeRepo,
+                              ManagerRepository managerRepo,
+                              PasswordEncoder passwordEncoder) {
+        this.employeeRepo = employeeRepo;
+        this.managerRepo = managerRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/set")
-    public String showSetForm(Authentication auth, Model model) {
-        model.addAttribute("username", auth.getName());
-        return "password-set";              // looks for templates/password-set.html
+    public String showSetPasswordForm() {
+        return "password-set";
     }
 
     @PostMapping("/set")
-    public String handleSet(@RequestParam String newPassword,
-                            @RequestParam String confirmPassword,
-                            Authentication auth,
-                            RedirectAttributes ra) {
+    public String handleSetPassword(@RequestParam("password") String password,
+                                    @RequestParam("confirmPassword") String confirmPassword,
+                                    Principal principal,
+                                    Model model) {
 
-        if (!newPassword.equals(confirmPassword)) {
-            ra.addFlashAttribute("error", "Passwords do not match.");
-            return "redirect:/password/set";
+        if (principal == null) {
+            return "redirect:/login";
         }
 
-        String username = auth.getName();
-        // Try manager first
-        Manager m = mgrRepo.findByUsername(username).orElse(null);
-        if (m != null) {
-            m.setPassword(encoder.encode(newPassword));
-            m.setMustChangePassword(false);
-            mgrRepo.save(m);
-            ra.addFlashAttribute("msg", "Password updated.");
-            return "redirect:/manager";
+        if (!password.equals(confirmPassword)) {
+            model.addAttribute("error", "Passwords do not match.");
+            return "password-set";
         }
 
-        // Then employee
-        Employee e = empRepo.findByUsername(username).orElse(null);
-        if (e != null) {
-            e.setPassword(encoder.encode(newPassword));
+        if (password.length() < 8) {
+            model.addAttribute("error", "Password must be at least 8 characters long.");
+            return "password-set";
+        }
+
+        String login = principal.getName(); // email or username
+
+        // Try employee first
+        Optional<Employee> empOpt = employeeRepo.findByEmail(login)
+                .or(() -> employeeRepo.findByUsername(login));
+
+        if (empOpt.isPresent()) {
+            Employee e = empOpt.get();
+            e.setPassword(passwordEncoder.encode(password));  // IMPORTANT
             e.setMustChangePassword(false);
-            empRepo.save(e);
-            ra.addFlashAttribute("msg", "Password updated.");
-            return "redirect:/employee";
+            employeeRepo.save(e);
+        } else {
+            // Otherwise, treat as manager
+            Manager m = managerRepo.findByEmail(login)
+                    .or(() -> managerRepo.findByUsername(login))
+                    .orElseThrow(() -> new IllegalStateException("User not found: " + login));
+            m.setPassword(passwordEncoder.encode(password));  // IMPORTANT
+            m.setMustChangePassword(false);
+            managerRepo.save(m);
         }
 
-        ra.addFlashAttribute("error", "User not found.");
-        return "redirect:/";
+        // Force user to log in again with the new password
+        return "redirect:/login?passwordChanged";
     }
 }

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications | CrewConnect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-[#F9F9F9] text-[#2C2C2C]">
+<header class="bg-white border-b">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a th:href="@{/}" class="text-2xl font-bold"><span class="text-[#D99A26]">Crew</span>Connect</a>
+        <a th:href="@{/employee}">Back to Dashboard</a>
+    </div>
+</header>
+
+<main class="max-w-3xl mx-auto mt-8 bg-white rounded-2xl shadow p-6">
+    <h1 class="text-2xl font-bold text-[#0D3B66] mb-4">Notifications</h1>
+    <div th:each="n : ${notes}" class="border-b py-3">
+        <div class="text-sm text-gray-500" th:text="${#temporals.format(n.createdAt, 'yyyy-MM-dd HH:mm')}">2025-11-12 09:30</div>
+        <div class="font-medium" th:text="${n.message}">You have been paired...</div>
+    </div>
+    <div th:if="${#lists.isEmpty(notes)}" class="text-gray-500">No notifications.</div>
+</main>
+</body>
+</html>

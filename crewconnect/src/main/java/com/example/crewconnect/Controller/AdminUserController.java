@@ -43,15 +43,15 @@ public class AdminUserController {
     }
 
     @PostMapping("/register")
-    public String submit(@RequestParam String role,
-                         @RequestParam String firstname,
-                         @RequestParam String lastname,
-                         @RequestParam String email,
-                         @RequestParam String username,
-                         @RequestParam String password,
-                         @RequestParam(required = false) String address,
-                         @RequestParam(required = false) String phonenumber,
-                         @RequestParam(required = false) Long managerId,
+    public String submit(@RequestParam("role") String role,
+                         @RequestParam("firstname") String firstname,
+                         @RequestParam("lastname") String lastname,
+                         @RequestParam("email") String email,
+                         @RequestParam("username") String username,
+                         @RequestParam("password") String password,
+                         @RequestParam(value = "address", required = false) String address,
+                         @RequestParam(value = "phonenumber", required = false) String phonenumber,
+                         @RequestParam(value = "managerId", required = false) Long managerId,
                          Model model) {
 
         // Always re-add managers so the form can render correctly
@@ -74,7 +74,7 @@ public class AdminUserController {
                 m.setPassword(password);
                 m.setAddress(address);
                 m.setPhonenumber(phonenumber);
-                reg.createManager(m);           // can throw IllegalArgumentException
+                reg.createManager(m);
             } else {
                 Employee e = new Employee();
                 e.setFirstname(firstname);
@@ -84,10 +84,10 @@ public class AdminUserController {
                 e.setPassword(password);
                 e.setAddress(address);
                 e.setPhonenumber(phonenumber);
-                reg.createEmployee(e, managerId); // can throw IllegalArgumentException
+                reg.createEmployee(e, managerId);
             }
         } catch (IllegalArgumentException ex) {
-            model.addAttribute("error", ex.getMessage()); // e.g., password policy message
+            model.addAttribute("error", ex.getMessage());
             return "admin-register";
         }
 
