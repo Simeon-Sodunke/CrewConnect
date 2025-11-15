@@ -131,8 +131,8 @@ public class AdminUserController {
 
     /* ------------------- EDIT: load form ------------------- */
     @GetMapping("/users/{type}/{id}/edit")
-    public String editUser(@PathVariable String type,
-                           @PathVariable Long id,
+    public String editUser(@PathVariable("type") String type,
+                           @PathVariable("id") Long id,
                            Model model) {
 
         String t = normalize(type);
@@ -150,24 +150,25 @@ public class AdminUserController {
             throw new IllegalArgumentException("Unknown type: " + type);
         }
 
-        // Always provide managers list (needed when switching to EMPLOYEE)
         model.addAttribute("managers", managerRepo.findAll());
         return "admin-user-edit";
     }
 
     /* ------------------- EDIT: submit (update/convert) ------------------- */
     @PostMapping("/users/{type}/{id}/edit")
-    public String updateUser(@PathVariable String type,
-                             @PathVariable Long id,
-                             @RequestParam String firstname,
-                             @RequestParam String lastname,
-                             @RequestParam String email,
-                             @RequestParam String username,
-                             @RequestParam(required = false) String address,
-                             @RequestParam(required = false) String phonenumber,
-                             @RequestParam(required = false) String password, // optional new password
-                             @RequestParam(required = false) Long managerId,  // for employees / demotions
-                             @RequestParam(required = false, defaultValue = "false") boolean mustChangePassword,
+    public String updateUser(@PathVariable("type") String type,
+                             @PathVariable("id") Long id,
+                             @RequestParam("firstname") String firstname,
+                             @RequestParam("lastname") String lastname,
+                             @RequestParam("email") String email,
+                             @RequestParam("username") String username,
+                             @RequestParam(value = "address", required = false) String address,
+                             @RequestParam(value = "phonenumber", required = false) String phonenumber,
+                             @RequestParam(value = "password", required = false) String password, // optional new password
+                             @RequestParam(value = "managerId", required = false) Long managerId,  // for employees / demotions
+                             @RequestParam(value = "mustChangePassword",
+                                     required = false,
+                                     defaultValue = "false") boolean mustChangePassword,
                              @RequestParam(name = "newRole") String newRole,
                              Model model) {
 
@@ -210,8 +211,8 @@ public class AdminUserController {
 
     /* ------------------- DELETE ------------------- */
     @PostMapping("/users/{type}/{id}/delete")
-    public String deleteUser(@PathVariable String type,
-                             @PathVariable Long id) {
+    public String deleteUser(@PathVariable("type") String type,
+                             @PathVariable("id") Long id) {
         String t = normalize(type);
         if ("EMPLOYEE".equals(t)) {
             reg.deleteEmployee(id);

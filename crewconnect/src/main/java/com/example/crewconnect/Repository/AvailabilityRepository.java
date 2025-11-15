@@ -13,8 +13,8 @@ public interface AvailabilityRepository extends JpaRepository<Availability, Long
 
     Optional<Availability> findByEmployee(Employee employee);
 
-    // ✅ Make sure THIS returns Optional, not List
     Optional<Availability> findByManager(Manager manager);
 
-    // keep any other methods you already have here
+    // 👉 Add this
+    void deleteAllByEmployee(Employee employee);
 }

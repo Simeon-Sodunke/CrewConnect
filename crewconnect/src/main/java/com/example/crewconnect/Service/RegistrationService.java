@@ -2,8 +2,8 @@ package com.example.crewconnect.Service;
 
 import com.example.crewconnect.Database.Employee;
 import com.example.crewconnect.Database.Manager;
-import com.example.crewconnect.Repository.EmployeeRepository;
-import com.example.crewconnect.Repository.ManagerRepository;
+import com.example.crewconnect.Repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +13,23 @@ public class RegistrationService {
     private final PasswordEncoder encoder;
     private final EmployeeRepository empRepo;
     private final ManagerRepository mgrRepo;
+    private final AvailabilityRepository availabilityRepo;
+    private final NotificationRepository notificationRepo;
+    private final PairingRepository pairingRepo;
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d).+$";
 
     public RegistrationService(PasswordEncoder encoder,
                                EmployeeRepository empRepo,
-                               ManagerRepository mgrRepo) {
+                               ManagerRepository mgrRepo,
+                               NotificationRepository notificationRepo,
+                               PairingRepository pairingRepo,
+                               AvailabilityRepository availabilityRepo) {
         this.encoder = encoder;
         this.empRepo = empRepo;
         this.mgrRepo = mgrRepo;
+        this.availabilityRepo = availabilityRepo;
+        this.notificationRepo = notificationRepo;
+        this.pairingRepo = pairingRepo;
     }
 
     public boolean isPasswordValid(String password) {
@@ -212,6 +221,39 @@ public class RegistrationService {
     }
 
     /* ---------- delete ---------- */
-    public void deleteEmployee(Long id) { empRepo.deleteById(id); }
-    public void deleteManager(Long id) { mgrRepo.deleteById(id); }
+    @Transactional
+    public void deleteEmployee(Long id) {
+        // Load the employee entity
+        Employee e = getEmployee(id);
+
+        // 1) Delete all notifications for this employee
+        notificationRepo.deleteAllByEmployee(e);
+
+        // 2) Delete all availability entries for this employee
+        availabilityRepo.deleteAllByEmployee(e);
+
+        // 3) Delete all pairings where this employee is A
+        pairingRepo.deleteAllByEmployeeA(e);
+
+        // 4) Delete all pairings where this employee is B
+        pairingRepo.deleteAllByEmployeeB(e);
+
+        // 5) Now it’s safe to delete the employee
+        empRepo.delete(e);
+    }
+
+    @Transactional
+    public void deleteManager(Long id) {
+        // 1) find all employees who report to this manager
+        var directReports = empRepo.findByManager_ManagerID(id);
+
+        // 2) break the relationship (set manager to null) and save
+        for (Employee e : directReports) {
+            e.setManager(null);
+            empRepo.save(e);
+        }
+
+        // 3) now it's safe to delete the manager
+        mgrRepo.deleteById(id);
+    }
 }

@@ -13,5 +13,13 @@ public interface PairingRepository extends JpaRepository<Pairing, Long> {
     List<Pairing> findByEmployeeAOrEmployeeBOrderByStartDesc(Employee a, Employee b);
 
     // Avoid duplicates
-    boolean existsByEmployeeAAndEmployeeBAndStartAndEnd(Employee a, Employee b, LocalDateTime start, LocalDateTime end);
+    boolean existsByEmployeeAAndEmployeeBAndStartAndEnd(Employee a, Employee b,
+                                                        LocalDateTime start, LocalDateTime end);
+
+    // For cleanup when deleting an employee
+    void deleteAllByEmployeeA(Employee employee);
+    void deleteAllByEmployeeB(Employee employee);
+
+    // ✅ NEW: get all upcoming pairings for everyone, sorted soonest first
+    List<Pairing> findByStartAfterOrderByStartAsc(LocalDateTime from);
 }

@@ -16,6 +16,17 @@
       document.getElementById('saveBtn')?.classList.toggle('hidden');
       document.getElementById('cancelBtn')?.classList.toggle('hidden');
     }
+
+    // 🔐 Only allow editing password after clicking "Update Password"
+    function enablePasswordEdit() {
+      const pwdField = document.getElementById('passwordField');
+      if (!pwdField) return;
+
+      // unlock and clear the masked placeholder
+      pwdField.removeAttribute('readonly');
+      pwdField.value = '';
+      pwdField.focus();
+    }
   </script>
 </head>
 
@@ -37,7 +48,10 @@
       <a th:href="@{/profile}" class="text-[#D99A26] font-semibold">My Profile</a>
       <form th:action="@{/logout}" method="post" class="inline">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <button type="submit" class="hover:text-[#D99A26] bg-transparent border-none cursor-pointer">Logout</button>
+        <button type="submit"
+                class="bg-[#D99A26] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#C48A1F] transition">
+          Logout
+        </button>
       </form>
     </nav>
   </div>
@@ -141,9 +155,17 @@
         <div class="space-y-2 max-w-md">
           <label class="block text-sm font-semibold text-gray-600 mb-1">Password</label>
           <input
+                  id="passwordField"
+                  name="password"
                   class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-[#D99A26]"
-                  type="password" placeholder="••••••••" />
-          <button type="button" class="bg-[#D99A26] hover:bg-[#C48A1F] text-white px-4 py-2 rounded-lg mt-3 font-semibold">
+                  type="password"
+                  value="********"
+                  readonly
+          />
+          <button
+                  type="button"
+                  onclick="enablePasswordEdit()"
+                  class="bg-[#D99A26] hover:bg-[#C48A1F] text-white px-4 py-2 rounded-lg mt-3 font-semibold">
             Update Password
           </button>
         </div>

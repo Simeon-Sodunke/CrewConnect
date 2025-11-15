@@ -19,7 +19,8 @@
             <!-- Logout must be POST -->
             <form th:action="@{/logout}" method="post" class="inline">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <button type="submit" class="hover:text-[#D99A26] bg-transparent border-0 cursor-pointer">
+                <button type="submit"
+                        class="bg-[#D99A26] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#C48A1F] transition">
                     Logout
                 </button>
             </form>

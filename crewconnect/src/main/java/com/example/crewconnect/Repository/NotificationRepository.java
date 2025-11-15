@@ -10,5 +10,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     long countByEmployeeAndReadFlagFalse(Employee employee);
 
+    void deleteAllByEmployee(Employee employee);
+
     List<Notification> findByEmployeeOrderByCreatedAtDesc(Employee employee);
 }
