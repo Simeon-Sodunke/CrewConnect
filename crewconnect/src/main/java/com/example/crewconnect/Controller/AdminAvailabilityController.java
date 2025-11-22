@@ -33,7 +33,7 @@ public class AdminAvailabilityController {
         LocalDate sunday = monday.plusDays(6);
 
         LocalDateTime from = monday.atStartOfDay();
-        // exclusive upper bound – start of the next day after Sunday
+        //start of the next day after Sunday
         LocalDateTime to = sunday.plusDays(1).atStartOfDay();
 
         // ✅ Fetch ALL time ranges, then filter in Java for anything that overlaps [from, to)

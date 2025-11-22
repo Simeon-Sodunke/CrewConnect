@@ -83,7 +83,16 @@
                             10:00 AM
                         </span>
           </td>
-          <td class="px-4 py-3" th:text="${p.platform}">Teams</td>
+          <td class="px-4 py-3">
+            <span th:text="${p.platform}">Teams</span>
+
+            <a th:href="${p.meetingLink != null ? p.meetingLink : 'https://teams.microsoft.com/'}"
+               target="_blank"
+               rel="noopener"
+               class="ml-2 text-blue-600 hover:underline">
+              Join
+            </a>
+          </td>
           <td class="px-4 py-3">
                         <span class="px-2 py-1 rounded-lg text-xs font-semibold"
                               th:classappend="${p.status == 'SCHEDULED'} ? ' bg-green-50 text-green-700'

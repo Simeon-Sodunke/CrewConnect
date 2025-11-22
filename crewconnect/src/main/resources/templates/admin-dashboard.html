@@ -16,7 +16,6 @@
         </a>
         <nav class="hidden md:flex gap-6 text-base font-medium" aria-label="Desktop navigation">
             <a th:href="@{/admin}" class="text-[#D99A26]">Home</a>
-            <a th:href="@{/admin}" class="hover:text-[#D99A26]">Admin</a>
             <a th:href="@{/profile}" class="hover:text-amber-500">My Profile</a>
             <a th:href="@{/admin/users}" class="hover:text-[#D99A26]">User Management</a>
             <a th:href="@{/admin/register}" class="hover:text-[#D99A26]">Create User</a>
@@ -61,8 +60,9 @@
                 </p>
             </div>
             <div class="flex gap-3">
-                <a th:href="@{/admin/register}" class="bg-[#D99A26] text-white px-4 py-2 rounded-xl font-semibold hover:bg-[#C48A1F] shadow">+ Create User</a>
-                <a th:href="@{/reports}" class="bg-white border px-4 py-2 rounded-xl font-semibold hover:bg-gray-50">View Reports</a>
+                <a th:href="@{/admin/reports}" class="bg-white border px-4 py-2 rounded-xl font-semibold hover:bg-gray-50">
+                    View Reports
+                </a>
             </div>
         </div>
     </div>
@@ -98,7 +98,7 @@
         <!-- Availability Windows (This Week) -->
         <a th:href="@{/admin/availability}"
            class="bg-white rounded-2xl shadow p-5 block hover:shadow-md hover:-translate-y-0.5 transition
-          focus:outline-none focus:ring-2 focus:ring-[#D99A26] focus:ring-offset-2"
+              focus:outline-none focus:ring-2 focus:ring-[#D99A26] focus:ring-offset-2"
            aria-label="View availability windows for this week">
             <div class="flex items-center justify-between">
                 <p class="text-sm text-gray-500">Availability Windows (This Week)</p>
@@ -110,7 +110,7 @@
         <!-- Upcoming Pairings -->
         <a th:href="@{/admin/pairings}"
            class="bg-white rounded-2xl shadow p-5 block hover:shadow-md hover:-translate-y-0.5 transition
-          focus:outline-none focus:ring-2 focus:ring-[#D99A26] focus:ring-offset-2"
+              focus:outline-none focus:ring-2 focus:ring-[#D99A26] focus:ring-offset-2"
            aria-label="View all upcoming pairings">
             <div class="flex items-center justify-between">
                 <p class="text-sm text-gray-500">Upcoming Pairings</p>
@@ -121,61 +121,21 @@
     </div>
 </section>
 
-<!-- Quick actions & search -->
-<section class="max-w-7xl mx-auto px-6">
-    <div class="grid gap-6 lg:grid-cols-3">
-        <div class="bg-white rounded-2xl shadow p-6 lg:col-span-1">
-            <h2 class="text-lg font-semibold text-[#0D3B66]">Quick Actions</h2>
-            <div class="mt-4 grid gap-3">
-                <a th:href="@{/admin/register}" class="block w-full text-center bg-[#D99A26] text-white px-4 py-2.5 rounded-xl font-semibold hover:bg-[#C48A1F]">Create Employee / Manager</a>
-                <a th:href="@{/pairings/generate}" class="block w-full text-center bg-white border px-4 py-2.5 rounded-xl font-semibold hover:bg-gray-50">Generate Pairings</a>
-                <a th:href="@{/notifications}" class="block w-full text-center bg-white border px-4 py-2.5 rounded-xl font-semibold hover:bg-gray-50">Notification Settings</a>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow p-6 lg:col-span-2">
-            <h2 class="text-lg font-semibold text-[#0D3B66]">Find a User</h2>
-            <form th:action="@{/admin/search}" method="get" class="mt-4 flex gap-3">
-                <input type="text" name="q" placeholder="Search by name, email, or username"
-                       class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#D99A26]">
-                <button type="submit" class="bg-white border px-5 rounded-xl font-semibold hover:bg-gray-50">Search</button>
-            </form>
-            <div class="mt-4">
-                <p class="text-sm text-gray-500" th:if="${#lists.isEmpty(searchResults)}">No results yet.</p>
-                <ul class="divide-y" th:if="${searchResults}">
-                    <li class="py-3 flex items-center justify-between" th:each="u : ${searchResults}">
-                        <div>
-                            <p class="font-medium" th:text="${u.firstname + ' ' + u.lastname}">Jane Doe</p>
-                            <p class="text-sm text-gray-600" th:text="${u.email}">jane@company.com</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <a th:href="@{|/admin/user/${u.id}|}" class="text-[#0D3B66] hover:underline">View</a>
-                            <a th:href="@{|/admin/user/${u.id}/edit|}" class="text-[#D99A26] hover:underline">Edit</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Notifications -->
+<!-- Quick actions ONLY (search + bottom notifications removed) -->
 <section class="max-w-7xl mx-auto px-6 pb-12">
     <div class="bg-white rounded-2xl shadow p-6">
-        <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-[#0D3B66]">Notifications</h2>
-            <a th:href="@{/notifications}" class="text-sm text-[#0D3B66] hover:underline">Configure</a>
+        <h2 class="text-lg font-semibold text-[#0D3B66]">Quick Actions</h2>
+        <div class="mt-4 grid gap-3">
+            <a th:href="@{/admin/register}" class="block w-full text-center bg-[#D99A26] text-white px-4 py-2.5 rounded-xl font-semibold hover:bg-[#C48A1F]">
+                Create Employee / Manager
+            </a>
+            <a th:href="@{/pairings/generate}" class="block w-full text-center bg-white border px-4 py-2.5 rounded-xl font-semibold hover:bg-gray-50">
+                Generate Pairings
+            </a>
+            <a th:href="@{/notifications}" class="block w-full text-center bg-white border px-4 py-2.5 rounded-xl font-semibold hover:bg-gray-50">
+                Notification Settings
+            </a>
         </div>
-        <ul class="mt-4 divide-y">
-            <li class="py-3 flex items-start gap-3" th:each="n : ${recentNotifications}">
-                <span class="text-xl">🔔</span>
-                <div>
-                    <p class="font-medium" th:text="${n.title}">Pairing Reminder Sent</p>
-                    <p class="text-sm text-gray-600" th:text="${n.summary}">Emails sent to 12 participants.</p>
-                </div>
-            </li>
-            <li th:if="${#lists.isEmpty(recentNotifications)}" class="py-4 text-gray-500">No recent notifications.</li>
-        </ul>
     </div>
 </section>
 

@@ -109,7 +109,8 @@ public class PairingService {
                 p.setEmployeeB(b);
                 p.setStart(slotStart);
                 p.setEnd(slotEnd);
-                // platform/status defaulted in entity @PrePersist
+                p.setPlatform("Teams");
+                p.setMeetingLink("https://teams.microsoft.com/");   // <--
                 pairingRepo.save(p);
 
                 // Notify both parties
@@ -166,8 +167,9 @@ public class PairingService {
                     partner.getFirstname() + " " + partner.getLastname(),
                     p.getStart(),
                     p.getEnd(),
-                    p.getPlatform(),   // now using real platform field
-                    p.getStatus()
+                    p.getPlatform(),
+                    p.getStatus(),
+                    p.getMeetingLink()
             ));
         }
         return result;
@@ -186,10 +188,11 @@ public class PairingService {
 
     // DTO used by pairings.html
     public record PairingView(
-            String       partnerName,
+            String partnerName,
             LocalDateTime start,
             LocalDateTime end,
-            String       platform,
-            String       status
+            String platform,
+            String status,
+            String meetingLink       // <-- NEW
     ) {}
 }

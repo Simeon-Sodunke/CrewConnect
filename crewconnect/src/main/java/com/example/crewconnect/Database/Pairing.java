@@ -41,6 +41,9 @@ public class Pairing {
     @Column(nullable = false)
     private String platform = "Teams";
 
+    @Column(name = "meeting_link")
+    private String meetingLink;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 

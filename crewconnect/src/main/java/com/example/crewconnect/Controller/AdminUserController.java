@@ -57,7 +57,7 @@ public class AdminUserController {
         // Always re-add managers so the form can render correctly
         model.addAttribute("managers", managerRepo.findAll());
 
-        // Uniqueness gate
+        // checking if email ot user name already exists
         String err = reg.validateUniqueness(email, username);
         if (err != null) {
             model.addAttribute("error", err);

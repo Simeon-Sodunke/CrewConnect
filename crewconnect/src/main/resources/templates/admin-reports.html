@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>System Reports | CrewConnect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-[#F9F9F9] text-[#2C2C2C] font-inter antialiased">
+
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a th:href="@{/admin}" class="text-2xl font-bold text-[#0D3B66]">
+            <span class="text-[#D99A26]">Crew</span>Connect
+        </a>
+        <nav class="hidden md:flex gap-6 text-base font-medium">
+            <a th:href="@{/admin}" class="hover:text-[#D99A26]">Dashboard</a>
+            <a th:href="@{/admin/users}" class="hover:text-[#D99A26]">User Management</a>
+            <a th:href="@{/admin/register}" class="hover:text-[#D99A26]">Create User</a>
+            <a th:href="@{/reports}" class="text-[#D99A26] font-semibold">Reports</a>
+            <form th:action="@{/logout}" method="post" class="inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit"
+                        class="bg-[#D99A26] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#C48A1F]">
+                    Logout
+                </button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-10">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-3xl font-extrabold text-[#0D3B66]">System Reports</h1>
+            <p class="text-gray-600 mt-1">
+                High-level overview of CrewConnect usage and activity.
+            </p>
+        </div>
+        <a th:href="@{/admin}" class="text-sm text-[#0D3B66] hover:underline">← Back to Dashboard</a>
+    </div>
+
+    <!-- Top stats -->
+    <section class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+        <div class="bg-white rounded-2xl shadow p-5">
+            <p class="text-sm text-gray-500">Total Employees</p>
+            <p class="text-3xl font-bold mt-2" th:text="${totalEmployees}">0</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-5">
+            <p class="text-sm text-gray-500">Total Managers</p>
+            <p class="text-3xl font-bold mt-2" th:text="${totalManagers}">0</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-5">
+            <p class="text-sm text-gray-500">Total Pairings</p>
+            <p class="text-3xl font-bold mt-2" th:text="${totalPairings}">0</p>
+        </div>
+
+        <!-- ✅ NEW: total availability windows -->
+        <div class="bg-white rounded-2xl shadow p-5">
+            <p class="text-sm text-gray-500">Total Availability Windows Created</p>
+            <p class="text-3xl font-bold mt-2" th:text="${totalAvailability}">0</p>
+        </div>
+
+        <!-- ✅ NEW: recently registered users -->
+        <div class="bg-white rounded-2xl shadow p-5">
+            <p class="text-sm text-gray-500">
+                Recently Registered Users
+                <span class="text-xs text-gray-400"
+                      th:text="${recentLabel}">(approx. last 10 users)</span>
+            </p>
+            <p class="text-3xl font-bold mt-2" th:text="${recentUsers}">0</p>
+        </div>
+    </section>
+
+    <!-- You can expand with tables/charts later -->
+    <section class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-semibold text-[#0D3B66] mb-3">Notes</h2>
+        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+            <li>Total availability windows counts every saved availability record.</li>
+            <li>Recently registered users include both employees and managers created in the last 30 days.</li>
+            <li>You can adjust the “30 days” window in the controller if needed.</li>
+        </ul>
+    </section>
+</main>
+
+<footer class="py-8 bg-[#0D3B66] text-white text-center mt-12">
+    <p class="text-sm opacity-90">© 2025 CrewConnect</p>
+</footer>
+
+</body>
+</html>

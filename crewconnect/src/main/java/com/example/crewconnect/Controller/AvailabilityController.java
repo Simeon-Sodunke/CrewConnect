@@ -56,7 +56,9 @@ public class AvailabilityController {
 
         // All time ranges for this employee’s availability, ordered by start
         List<TimeRange> slots =
-                timeRangeRepo.findByAvailability_Employee_EmployeeIDOrderByStartAsc(me.getEmployeeID());
+                timeRangeRepo.findByAvailability_Employee_EmployeeIDAndEndAfterOrderByStartAsc(
+                        me.getEmployeeID(), LocalDateTime.now()
+                );
 
         model.addAttribute("slots", slots);
         return "employee-availability";
@@ -151,7 +153,9 @@ public class AvailabilityController {
 
         // All time ranges for this manager’s availability, ordered by start
         List<TimeRange> slots =
-                timeRangeRepo.findByAvailability_Manager_ManagerIDOrderByStartAsc(mgr.getManagerID());
+                timeRangeRepo.findByAvailability_Manager_ManagerIDAndEndAfterOrderByStartAsc(
+                        mgr.getManagerID(), LocalDateTime.now()
+                );
 
         model.addAttribute("slots", slots);
         return "manager-availability";
