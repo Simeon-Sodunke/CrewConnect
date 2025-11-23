@@ -1,4 +1,4 @@
-package com.example.crewconnect;
+package com.example.crewconnect.Controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +17,4 @@ public class PageController {
         return "login";
     }
 
-    @GetMapping("/admin/register")
-    public String adminRegister() {
-        return "admin-register";
-    }
 }

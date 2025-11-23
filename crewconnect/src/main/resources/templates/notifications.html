@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications | CrewConnect</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="bg-[#F9F9F9] text-[#2C2C2C]">
+
+<!-- Top Bar -->
+<header class="bg-white border-b">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a th:href="@{/}" class="text-2xl font-bold">
+            <span class="text-[#D99A26]">Crew</span>Connect
+        </a>
+
+        <!-- Back link auto adjusts based on role -->
+        <a th:if="${role == 'EMPLOYEE'}" th:href="@{/employee}" class="hover:text-[#D99A26]">Back to Dashboard</a>
+        <a th:if="${role == 'MANAGER'}" th:href="@{/manager}" class="hover:text-[#D99A26]">Back to Dashboard</a>
+        <a th:if="${role == 'ADMIN'}" th:href="@{/admin}" class="hover:text-[#D99A26]">Back to Dashboard</a>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="max-w-3xl mx-auto mt-8 bg-white rounded-2xl shadow p-6">
+
+    <h1 class="text-2xl font-bold text-[#0D3B66] mb-4">Notifications</h1>
+
+    <!-- Notification List -->
+    <div th:each="n : ${notifications}" class="border-b py-3">
+        <div class="text-sm text-gray-500"
+             th:text="${#temporals.format(n.createdAt, 'EEE, MMM d • hh:mm a')}">
+            Tue, Nov 12 • 09:30 AM
+        </div>
+
+        <div class="font-medium mt-1" th:text="${n.message}">
+            You have been paired with someone.
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div th:if="${#lists.isEmpty(notifications)}"
+         class="text-gray-500 text-center py-6">
+        No notifications yet.
+    </div>
+</main>
+
+<footer class="text-center py-8 text-gray-600 text-sm">
+    © <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span> CrewConnect
+</footer>
+
+</body>
+</html>

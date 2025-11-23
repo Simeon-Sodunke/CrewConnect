@@ -9,15 +9,25 @@ public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long adminID;
-    //testing to see if my git works
 
     private String firstname;
     private String lastname;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false, unique = true)
     private String username;
     private String password;
     private String address;
     private String phonenumber;
+
+    @Column(nullable = false)
+    private boolean mustChangePassword = true;
+
+    @PrePersist
+    public void prePersist() {
+        // guarantee non-null default during first insert
+        this.mustChangePassword = (this.mustChangePassword || true);
+    }
 
     // Relations
     @OneToMany(mappedBy = "admin")

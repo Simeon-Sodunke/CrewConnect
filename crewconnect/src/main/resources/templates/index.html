@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1" >
@@ -22,7 +22,7 @@
             <a th:href="@{/}" class="hover:text-[#D99A26]">Home</a>
             <a href="#features" class="hover:text-[#D99A26]">Features</a>
             <a th:href="@{/login}" class="hover:text-[#D99A26]">Login</a>
-            <a th:href="@{/admin/register}" class="hover:text-[#D99A26]">Admin Register</a>
+           <!-- <a th:href="@{/admin/register}" class="hover:text-[#D99A26]">Admin Register</a> -->
             <a href="#contact" class="hover:text-[#D99A26]">Contact</a>
         </nav>
         <button type="button" 
@@ -55,14 +55,9 @@
             <p class="text-lg opacity-90 max-w-lg">
                 CrewConnect helps employees build real connections in remote and hybrid workplaces through smart, automated virtual coffee breaks and team-bonding sessions.
             </p>
-            <div class="mt-8 flex flex-wrap gap-4">
-                <a th:href="@{/login}" class="bg-[#D99A26] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#C48A1F]">Login</a>
-                <a th:href="@{/admin/register}" class="bg-white text-[#0D3B66] px-6 py-3 rounded-xl font-semibold hover:bg-gray-100">Admin Create User</a>
-            </div>
+
         </div>
-        <div class="hidden md:block reveal">
-            <img src="/images/dashboard-preview.png" th:src="@{/images/dashboard-preview.png}" alt="CrewConnect dashboard preview" class="rounded-2xl shadow-2xl opacity-90">
-        </div>
+
     </div>
 </section>
 
