@@ -150,9 +150,16 @@ public class PairingService {
      */
     @Transactional(readOnly = true)
     public List<PairingView> myPairings(String login) {
-        Employee me = employeeRepo.findByEmail(login)
-                .or(() -> employeeRepo.findByUsername(login))
-                .orElseThrow();
+        var optEmp = employeeRepo.findByEmail(login)
+                .or(() -> employeeRepo.findByUsername(login));
+
+        // If this login is NOT an employee (e.g., a pure Manager),
+        // just return an empty list instead of throwing.
+        if (optEmp.isEmpty()) {
+            return List.of();
+        }
+
+        Employee me = optEmp.get();
 
         List<Pairing> raw =
                 pairingRepo.findByEmployeeAOrEmployeeBOrderByStartDesc(me, me);
@@ -174,15 +181,20 @@ public class PairingService {
         }
         return result;
     }
-
     /**
      * Unread notifications count for top bar.
      */
     @Transactional(readOnly = true)
     public long unreadCount(String login) {
-        Employee me = employeeRepo.findByEmail(login)
-                .or(() -> employeeRepo.findByUsername(login))
-                .orElseThrow();
+        var optEmp = employeeRepo.findByEmail(login)
+                .or(() -> employeeRepo.findByUsername(login));
+
+        if (optEmp.isEmpty()) {
+            // Manager with no Employee row → no unread employee notifications
+            return 0L;
+        }
+
+        Employee me = optEmp.get();
         return notificationRepo.countByEmployeeAndReadFlagFalse(me);
     }
 

@@ -28,24 +28,30 @@ public class NotificationController {
     public String notifications(@AuthenticationPrincipal UserDetails user,
                                 Model model) {
 
-        // 1) Find current employee
-        Employee emp = employeeRepo.findByUsername(user.getUsername())
-                .orElseThrow();
+        if (user == null) {
+            throw new IllegalStateException("No logged in user for /notifications");
+        }
 
-        // 2) Load notifications for this employee, newest first
+        var optEmp = employeeRepo.findByEmail(user.getUsername())
+                .or(() -> employeeRepo.findByUsername(user.getUsername()));
+
+        if (optEmp.isEmpty()) {
+            // Logged in user is NOT an employee (likely a Manager)
+            model.addAttribute("notifications", List.of());
+            model.addAttribute("role", "MANAGER");
+            return "notifications";
+        }
+
+        Employee emp = optEmp.get();
+
         List<Notification> notifications =
                 noteRepo.findByEmployeeOrderByCreatedAtDesc(emp);
 
-        // 3) Mark them all as read (change to setSeen if your field name is different)
         notifications.forEach(n -> n.setReadFlag(true));
         noteRepo.saveAll(notifications);
 
-        // 4) Add to model
         model.addAttribute("notifications", notifications);
-
-        // Optional: for notifications.html "Back to Dashboard" role logic
-        model.addAttribute("role", "EMPLOYEE"); // or derive from your Employee/Manager
-
+        model.addAttribute("role", "EMPLOYEE");
         return "notifications";
     }
 }

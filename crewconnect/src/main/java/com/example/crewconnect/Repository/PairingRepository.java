@@ -20,7 +20,6 @@ public interface PairingRepository extends JpaRepository<Pairing, Long> {
     void deleteAllByEmployeeA(Employee employee);
     void deleteAllByEmployeeB(Employee employee);
 
-    // ✅ NEW: get all upcoming pairings for everyone, sorted soonest first
     List<Pairing> findByStartAfterOrderByStartAsc(LocalDateTime from);
 
     List<Pairing> findByStatusAndEndBefore(String status, LocalDateTime time);

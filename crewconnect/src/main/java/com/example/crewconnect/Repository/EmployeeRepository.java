@@ -16,7 +16,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     // all employees assigned to a manager
     List<Employee> findByManager_ManagerID(Long managerId);
 
-    // 🔹 NEW: for "recently registered users" (based on EmployeeID)
     Employee findTopByOrderByEmployeeIDDesc();
 
     long countByEmployeeIDGreaterThan(Long employeeID);

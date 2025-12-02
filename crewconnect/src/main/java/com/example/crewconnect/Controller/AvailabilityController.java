@@ -13,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -42,10 +43,6 @@ public class AvailabilityController {
     // =========================================================
     //  EMPLOYEE AVAILABILITY
     // =========================================================
-
-    /**
-     * Show "My Availability (Employee)" page.
-     */
     @GetMapping("/employee/availability")
     public String employeeAvailabilityPage(Model model, Principal principal) {
         if (principal == null) {
@@ -75,14 +72,39 @@ public class AvailabilityController {
             @RequestParam("end")
             @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime end,
 
-            Principal principal) {
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
             throw new IllegalStateException("No logged-in user for /employee/availability/add");
         }
 
-        if (start == null || end == null || !end.isAfter(start)) {
-            throw new IllegalArgumentException("Invalid start/end for availability window.");
+        // Basic null check
+        if (start == null || end == null) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Please select both a start and end time for your availability."
+            );
+            return "redirect:/employee/availability";
+        }
+
+        // End must be after start
+        if (!end.isAfter(start)) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "End time must be after start time (e.g., 8:00 AM to 9:00 AM)."
+            );
+            return "redirect:/employee/availability";
+        }
+
+        // Start must not be in the past
+        LocalDateTime now = LocalDateTime.now();
+        if (start.isBefore(now)) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "You can’t set availability in the past. Please choose a future time."
+            );
+            return "redirect:/employee/availability";
         }
 
         Employee me = findEmployeeByLogin(principal.getName());
@@ -104,6 +126,12 @@ public class AvailabilityController {
 
         // Re-run auto pairing (employee <-> employee only)
         pairingService.autoPairNextDays(30);
+
+        // Optional success message
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Availability window added."
+        );
 
         return "redirect:/employee/availability";
     }
@@ -140,9 +168,6 @@ public class AvailabilityController {
     //  MANAGER AVAILABILITY
     // =========================================================
 
-    /**
-     * Show "My Availability (Manager)" page.
-     */
     @GetMapping("/manager/availability")
     public String managerAvailabilityPage(Model model, Principal principal) {
         if (principal == null) {
@@ -163,7 +188,6 @@ public class AvailabilityController {
 
     /**
      * Add a new availability window for the logged-in manager.
-     * (We do NOT auto-pair managers; pairings are employee <-> employee only.)
      */
     @PostMapping("/manager/availability")
     public String addManagerAvailability(
@@ -173,14 +197,36 @@ public class AvailabilityController {
             @RequestParam("end")
             @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime end,
 
-            Principal principal) {
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
             throw new IllegalStateException("No logged-in user for /manager/availability");
         }
 
-        if (start == null || end == null || !end.isAfter(start)) {
-            throw new IllegalArgumentException("Invalid start/end for manager availability.");
+        if (start == null || end == null) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Please select both a start and end time for your availability."
+            );
+            return "redirect:/manager/availability";
+        }
+
+        if (!end.isAfter(start)) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "End time must be after start time."
+            );
+            return "redirect:/manager/availability";
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (start.isBefore(now)) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "You can’t set availability in the past."
+            );
+            return "redirect:/manager/availability";
         }
 
         Manager mgr = findManagerByLogin(principal.getName());
@@ -198,7 +244,33 @@ public class AvailabilityController {
         tr.setEnd(end);
         timeRangeRepo.save(tr);
 
-        // No autoPair call here (only employees get auto-paired)
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Availability window added."
+        );
+
+        return "redirect:/manager/availability";
+    }
+    @PostMapping("/manager/availability/delete/{timeRangeId}")
+    public String deleteManagerAvailability(@PathVariable("timeRangeId") Long timeRangeId,
+                                            Principal principal) {
+        if (principal == null) {
+            throw new IllegalStateException("No logged-in user for delete manager availability");
+        }
+
+        Manager mgr = findManagerByLogin(principal.getName());
+
+        timeRangeRepo.findById(timeRangeId).ifPresent(tr -> {
+            Availability avail = tr.getAvailability();
+            Manager owner = (avail != null) ? avail.getManager() : null;
+
+            if (owner != null && owner.getManagerID().equals(mgr.getManagerID())) {
+                timeRangeRepo.delete(tr);
+            } else {
+                throw new IllegalArgumentException("You cannot delete another manager's availability.");
+            }
+        });
+
         return "redirect:/manager/availability";
     }
 

@@ -42,10 +42,12 @@ public class PasswordController {
                                     Principal principal,
                                     Model model) {
 
+        // 1) Must be logged in
         if (principal == null) {
             return "redirect:/login";
         }
 
+        // 2) Basic validations
         if (!password.equals(confirmPassword)) {
             model.addAttribute("error", "Passwords do not match.");
             return "password-set";
@@ -58,26 +60,41 @@ public class PasswordController {
 
         String login = principal.getName(); // email or username
 
-        // Try employee first
+        // 3) Try Employee first
         Optional<Employee> empOpt = employeeRepo.findByEmail(login)
                 .or(() -> employeeRepo.findByUsername(login));
 
         if (empOpt.isPresent()) {
             Employee e = empOpt.get();
-            e.setPassword(passwordEncoder.encode(password));  // IMPORTANT
+
+            // 4) Prevent reusing same password
+            if (passwordEncoder.matches(password, e.getPassword())) {
+                model.addAttribute("error", "New password must be different from your current password.");
+                return "password-set";
+            }
+
+            // 5) Save new password
+            e.setPassword(passwordEncoder.encode(password));
             e.setMustChangePassword(false);
             employeeRepo.save(e);
+
         } else {
-            // Otherwise, treat as manager
+            // Manager fallback
             Manager m = managerRepo.findByEmail(login)
                     .or(() -> managerRepo.findByUsername(login))
                     .orElseThrow(() -> new IllegalStateException("User not found: " + login));
-            m.setPassword(passwordEncoder.encode(password));  // IMPORTANT
+
+            if (passwordEncoder.matches(password, m.getPassword())) {
+                model.addAttribute("error", "New password must be different from your current password.");
+                return "password-set";
+            }
+
+            m.setPassword(passwordEncoder.encode(password));
             m.setMustChangePassword(false);
             managerRepo.save(m);
         }
 
-        // Force user to log in again with the new password
+        // 6) Force re-login with new password
         return "redirect:/login?passwordChanged";
     }
 }

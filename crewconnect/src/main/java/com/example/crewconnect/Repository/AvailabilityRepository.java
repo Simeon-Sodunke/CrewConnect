@@ -15,6 +15,5 @@ public interface AvailabilityRepository extends JpaRepository<Availability, Long
 
     Optional<Availability> findByManager(Manager manager);
 
-    // 👉 Add this
     void deleteAllByEmployee(Employee employee);
 }
