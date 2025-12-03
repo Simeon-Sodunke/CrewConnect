@@ -21,9 +21,23 @@
       const pwdField = document.getElementById('passwordField');
       if (!pwdField) return;
 
+      // Make the field editable and actually submittable
       pwdField.removeAttribute('readonly');
+      pwdField.removeAttribute('disabled');
+      pwdField.classList.remove('cursor-not-allowed', 'bg-gray-50');
       pwdField.value = '';
       pwdField.focus();
+
+      // Ensure Save / Cancel buttons are visible so form can be submitted
+      const editBtn   = document.getElementById('editBtn');
+      const saveBtn   = document.getElementById('saveBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+
+      if (editBtn && !editBtn.classList.contains('hidden')) {
+        editBtn.classList.add('hidden');
+      }
+      if (saveBtn)   saveBtn.classList.remove('hidden');
+      if (cancelBtn) cancelBtn.classList.remove('hidden');
     }
   </script>
 </head>
@@ -56,8 +70,20 @@
 </header>
 
 <!-- Mandatory change-password notice -->
-<div th:if="${p.mustChangePassword}" class="bg-amber-100 border border-amber-300 text-amber-900 px-6 py-3 text-sm text-center">
+<div th:if="${p.mustChangePassword}"
+     class="bg-amber-100 border border-amber-300 text-amber-900 px-6 py-3 text-sm text-center">
   For security, please update your password.
+</div>
+
+<!-- FLASH MESSAGES -->
+<div class="max-w-4xl mx-auto mt-4">
+  <div th:if="${successMessage}" class="mb-4 px-4 py-3 rounded bg-green-100 text-green-800">
+    <span th:text="${successMessage}"></span>
+  </div>
+
+  <div th:if="${errorMessage}" class="mb-4 px-4 py-3 rounded bg-red-100 text-red-800">
+    <span th:text="${errorMessage}"></span>
+  </div>
 </div>
 
 <!-- Profile Container -->
@@ -68,12 +94,12 @@
     <h2 class="text-3xl font-bold text-[#0D3B66]" th:text="${p.fullName}">User Name</h2>
 
     <p class="text-gray-600">
-            <span th:switch="${p.role}">
-                <span th:case="'EMPLOYEE'">Employee ID:</span>
-                <span th:case="'MANAGER'">Manager ID:</span>
-                <span th:case="'ADMIN'">Admin ID:</span>
-                <span th:case="*">User ID:</span>
-            </span>
+      <span th:switch="${p.role}">
+        <span th:case="'EMPLOYEE'">Employee ID:</span>
+        <span th:case="'MANAGER'">Manager ID:</span>
+        <span th:case="'ADMIN'">Admin ID:</span>
+        <span th:case="*">User ID:</span>
+      </span>
       <span th:text="${p.id}">1</span>
     </p>
 
@@ -88,7 +114,6 @@
     <h3 class="text-xl font-semibold text-[#0D3B66] mb-4">Personal Information</h3>
 
     <form th:action="@{/profile}" method="post">
-
       <!-- CSRF -->
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
@@ -150,15 +175,22 @@
         <div class="space-y-2 max-w-md">
           <label class="block text-sm font-semibold text-gray-600 mb-1">Password</label>
 
-          <input id="passwordField" name="password"
-                 class="border border-gray-300 rounded-lg px-3 py-2 w-full"
-                 type="password" value="********" readonly/>
+          <!-- just show masked password, not editable here -->
+          <input
+                  class="border border-gray-300 rounded-lg px-3 py-2 w-full bg-gray-50"
+                  type="password"
+                  value="********"
+                  readonly />
 
-          <button type="button"
-                  onclick="enablePasswordEdit()"
-                  class="bg-[#D99A26] text-white px-4 py-2 rounded-lg mt-3 font-semibold hover:bg-[#C48A1F]">
+          <p class="text-xs text-gray-500">
+            To change your password, use the secure password update page.
+          </p>
+
+          <!-- ✅ This is the important part -->
+          <a th:href="@{/password/set}"
+             class="inline-block bg-[#D99A26] text-white px-4 py-2 rounded-lg mt-3 font-semibold hover:bg-[#C48A1F]">
             Update Password
-          </button>
+          </a>
         </div>
       </div>
 
@@ -188,7 +220,9 @@
 </main>
 
 <footer class="py-8 bg-[#0D3B66] text-white text-center mt-12">
-  <p class="text-sm opacity-90">© <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span> CrewConnect</p>
+  <p class="text-sm opacity-90">
+    © <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span> CrewConnect
+  </p>
 </footer>
 
 </body>

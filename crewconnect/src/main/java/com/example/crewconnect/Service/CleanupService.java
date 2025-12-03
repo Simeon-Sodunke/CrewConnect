@@ -19,7 +19,6 @@ public class CleanupService {
         this.pairingRepo = pairingRepo;
     }
 
-    // runs every 5 minutes
     @Scheduled(fixedRate = 5 * 60 * 1000)
     public void updateExpiredPairings() {
         LocalDateTime now = LocalDateTime.now();

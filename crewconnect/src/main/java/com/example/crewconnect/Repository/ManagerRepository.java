@@ -13,7 +13,6 @@ public interface ManagerRepository extends JpaRepository<Manager, Long> {
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);
 
-    // 🔹 NEW: for "recently registered users" (based on ManagerID)
     Manager findTopByOrderByManagerIDDesc();
 
     long countByManagerIDGreaterThan(Long managerID);

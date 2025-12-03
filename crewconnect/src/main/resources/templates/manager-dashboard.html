@@ -48,16 +48,18 @@
     </a>
 
     <!-- Pairings -->
-    <div class="bg-white shadow rounded-2xl p-6">
+    <a th:href="@{/pairings}"
+       class="bg-white shadow rounded-2xl p-6 block hover:shadow-md transition">
       <h2 class="font-semibold text-[#0D3B66]">Pairings</h2>
       <p class="text-gray-500 text-sm mt-1">Check or generate pairings.</p>
-    </div>
+    </a>
 
     <!-- Notifications -->
-    <div class="bg-white shadow rounded-2xl p-6">
+    <a th:href="@{/notifications}"
+       class="bg-white shadow rounded-2xl p-6 block hover:shadow-md transition">
       <h2 class="font-semibold text-[#0D3B66]">Notifications</h2>
       <p class="text-gray-500 text-sm mt-1">Review recent updates.</p>
-    </div>
+    </a>
 
     <!-- NEW: Set Availability for Manager -->
     <a th:href="@{/manager/availability}"
