@@ -58,6 +58,18 @@ public class PasswordController {
             return "password-set";
         }
 
+        // Must contain at least one uppercase letter
+        if (!password.matches(".*[A-Z].*")) {
+            model.addAttribute("error", "Password must contain at least one uppercase letter.");
+            return "password-set";
+        }
+
+        // Must contain at least one number
+        if (!password.matches(".*\\d.*")) {
+            model.addAttribute("error", "Password must contain at least one number.");
+            return "password-set";
+        }
+
         String login = principal.getName(); // email or username
 
         // 3) Try Employee first
